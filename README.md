@@ -1,3 +1,4 @@
 # sergiuszlts.github.io
-My github website
+My GitHub Website
 [Link](https://sergiuszlts.github.io)
+
