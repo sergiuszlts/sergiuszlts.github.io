@@ -61,11 +61,13 @@ nav{
 
 ul {
     list-style-type: none;
+    list-style: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
     text-align:center;
     background-color: #242d4c;
+    font-size: 0;
   }
   
   li {
@@ -73,10 +75,11 @@ ul {
   }
   
   li a {
+    font-size: 16px;
     display: block;
+    padding: 16px;
     color: white;
     text-align: center;
-    padding: 16px;
     text-decoration: none;
     -webkit-transition: background-color 0.5s;
     transition: background-color 0.5s;
@@ -85,7 +88,7 @@ ul {
       color: white;
   }
   li a:hover {
-    background-color: rgb(23, 24, 37);
+    background-color: #353e5d;
   }
 
 #content
@@ -114,10 +117,8 @@ ul {
 
 @media (max-width: 550px) {
     #logo{
-        text-align: center;
-    }
-    #logo a{
-        margin-left: 0;
+        height: 170px;
+        line-height: 170px;
     }
     li{
         display: block;
