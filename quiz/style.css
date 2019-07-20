@@ -16,7 +16,20 @@ header{
     font-size: 3em;
     margin-bottom: 30px;
 }
+#logo a{
+  text-decoration: none;
+}
 
+#logo a:link {
+  text-decoration: none;
+  color: black;
+}
+
+#logo a:visited {
+  text-decoration: none;
+  color: black;
+
+}
 nav{
     width: 100%;
     height: 40px;
@@ -147,4 +160,14 @@ ul {
     .result, .info{
       width: 90%;
     }
+  }
+
+  .footer {
+    background-color: #3662c2;
+    color: white;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 100%;
+    margin-top: 30px;
   }
