@@ -1,7 +1,7 @@
 
 function init() {
 
-    fetch("http://worldtimeapi.org/api/timezone/Europe/Warsaw")
+    fetch("https://worldtimeapi.org/api/timezone/Europe/Warsaw")
         .then(r => r.json())
         .then(data => {
             var date = new Date(data.datetime.replace(/[+-]\d\d:\d\d$/, ''));
