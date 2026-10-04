@@ -51,14 +51,20 @@ canvas{display:block;width:100%;height:100%}
 <div id="pz">Pauza<small>Naciśnij P, aby wrócić do gry</small></div>
 <div id="toast"><canvas id="tc" width="96" height="96"></canvas><div><small id="tn"></small><div id="tt"></div></div></div>
 <div id="msg"><h1 id="mt"></h1><p id="mp"></p><button id="mb"></button></div>
-<div id="pick"><h1>CactuWars</h1><p>Poziom trudności</p><div id="diff"></div><button id="tg" class="dbtn on">Komunikaty wrogów: włączone</button><p>Wybierz swoje państwo</p><div id="nats"></div></div>
+<div id="pick"><h1>CactuWars</h1><p>Poziom trudności</p><div id="diff"></div><button id="tg" class="dbtn on">Komunikaty wrogów: włączone</button>
+<button id="td" class="dbtn on">Odznaczanie po ponownym najechaniu: włączone</button><p>Wybierz swoje państwo</p><div id="nats"></div></div>
 <script>
 const cv=document.getElementById('c');let ctx=cv.getContext('2d');
 let al={};const FL=['#ff1a1a','#00e5ff','#d400ff'];
 function ally(a,b){return a===b||(al[a]!==undefined&&al[a]===al[b])}
 function pt(o){return o>0&&ally(o,1)}
 function flag(x,y,k){ctx.save();ctx.lineJoin='round';ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-11);ctx.lineTo(x,y+10);ctx.stroke();ctx.fillStyle=FL[k];ctx.strokeStyle='#000c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-10);ctx.lineTo(x+17,y-10);ctx.lineTo(x+13,y-4.5);ctx.lineTo(x+17,y+1);ctx.lineTo(x,y+1);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
-const DIFF=[{n:'Łatwy',t:.7,ai:.45,th:1.4,ps:30},{n:'Normalny',t:1,ai:0,th:1.15,ps:24},{n:'Trudny',t:1.3,ai:-.25,th:1,ps:22}];let diff=1;
+let bars=[];
+function segX(a,b,c,d){const o=(p,q,r)=>(q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x);return o(a,b,c)*o(a,b,d)<0&&o(c,d,a)*o(c,d,b)<0}
+function blocked(a,b){return bars.some(w=>segX(a,b,{x:w.x1,y:w.y1},{x:w.x2,y:w.y2}))}
+function dSeg(p,w){const dx=w.x2-w.x1,dy=w.y2-w.y1,t=Math.max(0,Math.min(1,((p.x-w.x1)*dx+(p.y-w.y1)*dy)/(dx*dx+dy*dy)));return Math.hypot(p.x-w.x1-t*dx,p.y-w.y1-t*dy)}
+function connected(){const seen=new Set([0]),q=[0];while(q.length){const i=q.pop();cells.forEach((c,j)=>{if(!seen.has(j)&&!blocked(cells[i],c)){seen.add(j);q.push(j)}})}return seen.size===cells.length}
+const DIFF=[{n:'Łatwy',t:.5,ai:.9,th:1.8,ps:36},{n:'Normalny',t:1,ai:0,th:1.15,ps:24},{n:'Trudny',t:1.3,ai:-.25,th:1,ps:22}];let diff=1;
 const BC={0:'#8a8f94',1:'#3a8bff',2:'#f2c600',3:'#ff9ec7',4:'#8a7ca8',5:'#ee7a1c',6:'#a6e22e',7:'#2a8a48',8:'#e8ecf4'},BN={1:'Królestwo Oka Pawła',2:'Herbaciany Ranfisz',3:'Mech Mechutea',4:'Królestwo Spinacza Tomka',5:'Państwo Mur Mira',6:'Atomowe Imperium Klimaxa',7:'Imperium Promotora Pooshka',8:'Królestwo Furry Felix'};
 let COL={...BC},NAME={...BN},map=[0,1,2,3,4,5];
 function setNation(n){map=[0,n,...[1,2,3,4,5,6,7,8].filter(k=>k!==n)];COL={0:BC[0]};NAME={};for(let o=1;o<=8;o++){COL[o]=BC[map[o]];NAME[o]=BN[map[o]]}}
@@ -152,11 +158,20 @@ function gen(){
   for(let i=0;i<nP;i++)add(1,DIFF[diff].ps,34);
   for(let i=0;i<nEn;i++)add(ids[i%F],(T*tm/nEn*(.85+Math.random()*.3))|0,26+Math.min(level,8));
   for(let i=0;i<nNeu;i++)add(0,6+Math.random()*16|0,20+Math.random()*16);
+  bars=[];
+  const nB=Math.random()*(2+Math.min(level,6)/2)|0;
+  for(let t=0;t<80&&bars.length<nB;t++){
+    const len=Math.min(W,H)*(.25+Math.random()*.3),a=Math.random()*Math.PI,cx=m+Math.random()*(W-2*m),cy=top+Math.random()*(H-top-m);
+    const w={x1:cx-Math.cos(a)*len/2,y1:cy-Math.sin(a)*len/2,x2:cx+Math.cos(a)*len/2,y2:cy+Math.sin(a)*len/2};
+    if([w.x1,w.x2].some(v=>v<12||v>W-12)||[w.y1,w.y2].some(v=>v<top||v>H-12))continue;
+    if(cells.some(c=>dSeg(c,w)<c.r+36))continue;
+    bars.push(w);if(!connected())bars.pop();
+  }
   document.getElementById('lv').textContent='Poziom '+level+' ('+DIFF[diff].n.toLowerCase()+'), wrogowie: '+ids.filter(o=>!ally(o,1)).map(o=>NAME[o]).join(', ')+(al[1]!==undefined?'; sojusznik: '+NAME[ids.find(o=>ally(o,1))]:'')+(fl?'. Flagi oznaczają sojusze':'');
 }
 const SAY={atk:['Już po tobie!','Nie masz szans!','Czas się poddać!','Nadchodzimy!','Strzeż się!','Idzie na ciebie burza!','Twój koniec jest bliski!','Szykuj się na porażkę!','Nikt cię nie uratuje!'],cap:['Haha!','Teraz to moje!','Łatwizna!','Dziękuję za prezent!','Jeden mniej!','To było za proste!','Witaj w moim imperium!','Mam cię!'],def:['Zostaw mnie w spokoju!','Pożałujesz!','Jak śmiesz?!','Nie z nami te numery!','Tego nie zapomnę!','Wynoś się!','Odczep się!','Zapłacisz za to!']};
-SAY.help=['Wysyłam ci wsparcie!','Trzymaj się, pomoc nadchodzi!','Sojusznicy w drodze!','Nie zostawię cię!'];SAY.thx=['Dzięki za pomoc!','Sojusznik tego nie zapomni!','Wielkie dzięki, przyjacielu!','Twoje wsparcie się liczy!'];
-let lastMsg=0,toastT=0,lastTxt='',taunts=true;
+SAY.help=['Wysyłam ci wsparcie!','Trzymaj się, pomoc nadchodzi!','Sojusznicy w drodze!','Nie zostawię cię samego!'];SAY.thx=['Dzięki za pomoc!','Sojusznik tego nie zapomni!','Wielkie dzięki, przyjacielu!','Twoje wsparcie się liczy!'];
+let lastMsg=0,toastT=0,lastTxt='',taunts=true,deselect=true;
 function say(o,list,p){
   if(!taunts)return;const now=performance.now();if(Math.random()>p||now-lastMsg<7000)return;lastMsg=now;
   const c=document.getElementById('tc'),g=c.getContext('2d');
@@ -166,13 +181,14 @@ function say(o,list,p){
   t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);
 }
 function send(a,b){
+  if(blocked(a,b))return;
   const k=a.n>>1;if(k<1)return;a.n-=k;if(a.o>=2&&b.o===1)say(a.o,ally(a.o,1)?SAY.help:SAY.atk,ally(a.o,1)?.6:.25);else if(a.o===1&&b.o>=2)say(b.o,ally(b.o,1)?SAY.thx:SAY.def,ally(b.o,1)?.4:.25);
   for(let i=0;i<k;i++)units.push({a,b,o:a.o,p:-i*9/ Math.hypot(a.x-b.x,a.y-b.y)});
 }
 function cellAt(x,y){return cells.find(c=>Math.hypot(c.x-x,c.y-y)<=c.r+6)}
 function pos(e){const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
 let hov=null;
-function hover(){const c=cellAt(ptr.x,ptr.y);if(c===hov)return;hov=c;if(c&&c.o===1){const i=drag.indexOf(c);i<0?drag.push(c):drag.splice(i,1)}}
+function hover(){const c=cellAt(ptr.x,ptr.y);if(c===hov)return;hov=c;if(c&&c.o===1){const i=drag.indexOf(c);if(i<0)drag.push(c);else if(deselect)drag.splice(i,1)}}
 cv.addEventListener('pointerdown',e=>{if(state!=='play')return;ptr=pos(e);drag=[];hov=null;hover()});
 cv.addEventListener('pointermove',e=>{ptr=pos(e);if(drag)hover()});
 addEventListener('pointerup',()=>{if(!drag)return;const t=cellAt(ptr.x,ptr.y);
@@ -180,9 +196,12 @@ addEventListener('pointerup',()=>{if(!drag)return;const t=cellAt(ptr.x,ptr.y);
 function ai(){
   cells.filter(c=>c.o>=2&&c.n>10).forEach(s=>{
     if(Math.random()>.45)return;
-    if(al[s.o]!==undefined&&Math.random()<.3){const h=cells.filter(t=>t.o!==s.o&&ally(t.o,s.o)&&t.n<s.n*.6).sort((x,y)=>x.n-y.n)[0];if(h){send(s,h);return}}
+    if(al[s.o]!==undefined&&Math.random()<.2&&cells.filter(c=>c.o===s.o).length>=2){
+      const h=cells.filter(t=>t.o!==s.o&&ally(t.o,s.o)&&t.n<s.n*.8&&!blocked(s,t)&&Math.hypot(t.x-s.x,t.y-s.y)<Math.min(W,H)*.6&&units.some(u=>u.b===t&&!ally(u.o,t.o))).sort((x,y)=>x.n-y.n)[0];
+      if(h&&s.n>14){send(s,h);return}
+    }
     let best=null,bs=1e9;
-    cells.forEach(t=>{if(ally(t.o,s.o))return;const sc=Math.hypot(t.x-s.x,t.y-s.y)+t.n*4;if(sc<bs){bs=sc;best=t}});
+    cells.forEach(t=>{if(ally(t.o,s.o)||blocked(s,t))return;const sc=Math.hypot(t.x-s.x,t.y-s.y)+t.n*4;if(sc<bs){bs=sc;best=t}});
     if(best&&s.n*.5>best.n*DIFF[diff].th+3)send(s,best);
   });
 }
@@ -215,10 +234,11 @@ function step(dt){
 }
 function draw(){
   ctx.clearRect(0,0,W,H);
+  bars.forEach(w=>{ctx.lineCap='round';ctx.strokeStyle='#000a';ctx.lineWidth=9;ctx.beginPath();ctx.moveTo(w.x1,w.y1);ctx.lineTo(w.x2,w.y2);ctx.stroke();ctx.strokeStyle='#4b5667';ctx.lineWidth=5;ctx.stroke();ctx.strokeStyle='#7d8ba0';ctx.lineWidth=1.5;ctx.stroke()});
   if(drag){
     const t=cellAt(ptr.x,ptr.y);
     ctx.strokeStyle=COL[1];ctx.lineWidth=2;ctx.setLineDash([6,6]);
-    drag.forEach(s=>{ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(t&&t!==s?t.x:ptr.x,t&&t!==s?t.y:ptr.y);ctx.stroke()});
+    drag.forEach(s=>{ctx.strokeStyle=t&&t!==s&&blocked(s,t)?'#ff5a5a':COL[1];ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(t&&t!==s?t.x:ptr.x,t&&t!==s?t.y:ptr.y);ctx.stroke()});
     ctx.setLineDash([]);
   }
   cells.forEach(c=>{
@@ -249,6 +269,7 @@ addEventListener('keydown',e=>{
 });
 function buildPick(){
   const tg=document.getElementById('tg');tg.onclick=()=>{taunts=!taunts;tg.classList.toggle('on',taunts);tg.textContent='Komunikaty wrogów: '+(taunts?'włączone':'wyłączone')};
+  const td=document.getElementById('td');td.onclick=()=>{deselect=!deselect;td.classList.toggle('on',deselect);td.textContent='Odznaczanie po ponownym najechaniu: '+(deselect?'włączone':'wyłączone')};
   const dv=document.getElementById('diff');
   DIFF.forEach((d,i)=>{const b=document.createElement('button');b.className='dbtn'+(i===diff?' on':'');b.textContent=d.n;b.onclick=()=>{diff=i;[...dv.children].forEach((x,j)=>x.classList.toggle('on',j===i))};dv.append(b)});
   const box=document.getElementById('nats');
