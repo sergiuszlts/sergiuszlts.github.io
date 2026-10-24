@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CactuWars</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#10151c;--fg:#efe4c8;--mut:#a9a07f;--p:#2f7de0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root:not([data-theme="light"]){color-scheme:dark}
+html,body{height:100%;margin:0;background:radial-gradient(ellipse at center,#243042,#0d1219) var(--bg);color:var(--fg);font-family:Nunito,Arial,sans-serif;overflow:hidden;touch-action:none;user-select:none}
+canvas{display:block;width:100%;height:100%}
+#hud{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);display:flex;justify-content:space-between;align-items:center;padding:10px 14px;pointer-events:none;font-size:15px}
+#hud button{pointer-events:auto;background:none;border:1px solid var(--mut);color:var(--fg);padding:6px 12px;border-radius:999px;font:inherit;cursor:pointer}
+#hud button:focus-visible{outline:2px solid var(--p)}
+#msg{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(13,18,25,.9);text-align:center;padding:20px}
+#msg h1{margin:0;font-size:clamp(34px,8vw,64px);font-weight:400;letter-spacing:.02em}
+#msg p{margin:0;color:var(--mut);max-width:34ch;line-height:1.5}
+#msg button{background:var(--p);color:#fff;border:0;padding:12px 26px;border-radius:999px;font:inherit;font-size:17px;cursor:pointer}
+#pick{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(13,18,25,.95);text-align:center;padding:20px;overflow:auto}
+#pick h1{margin:0;font-size:clamp(38px,9vw,72px);font-weight:600}
+#pick p{margin:0;color:var(--mut)}
+#nats{display:grid;grid-template-columns:repeat(5,132px);gap:12px;justify-content:center}
+@media(max-width:780px){#nats{grid-template-columns:repeat(2,132px)}}
+.nat{display:flex;flex-direction:column;align-items:center;gap:6px;width:132px;padding:12px 8px;background:rgba(255,255,255,.05);color:var(--fg);border:2px solid;border-radius:14px;font:inherit;font-size:14px;cursor:pointer}
+.nat:hover,.nat:focus-visible{background:rgba(255,255,255,.14);outline:none}
+#hud{flex-wrap:wrap;gap:6px 10px}
+#lv{flex:1 1 auto;min-width:0}
+.btns{display:flex;gap:8px;flex-shrink:0}
+#hud button{white-space:nowrap}
+#hint{order:3;flex:1 1 100%;font-size:12px;line-height:1.35;color:var(--mut)}
+@media(max-width:480px){#hud{padding:8px 10px}#hud button{padding:5px 10px;font-size:13px}}
+@media(min-width:900px){#hint{order:0;flex:1 1 0;text-align:center;font-size:15px;padding:0 12px;color:var(--fg)}}
+#pick{justify-content:safe center}
+#diff{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.dbtn{background:none;border:1px solid var(--mut);color:var(--fg);padding:7px 16px;border-radius:999px;font:inherit;cursor:pointer}
+.dbtn.on{background:var(--p);border-color:var(--p);color:#fff}
+.dbtn:focus-visible{outline:2px solid var(--p)}
+#pz{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(13,18,25,.6);pointer-events:none;font-size:clamp(34px,8vw,60px)}
+#pz small{font-size:16px;color:var(--mut)}
+#toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);display:flex;align-items:center;gap:10px;padding:8px 16px 8px 8px;background:rgba(13,18,25,.9);border:3px solid var(--mut);border-radius:14px;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;max-width:90vw}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast canvas{width:48px;height:48px;flex:none}
+#toast small{display:block;color:var(--mut);font-size:11px}
+#toast #tt{font-size:17px}
+#pick{gap:8px}
+#pick h1{font-size:clamp(28px,6vw,46px)}
+#pick p{font-size:14px}
+.dbtn{padding:5px 14px;font-size:13px}
+#tgl{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+#tgl .dbtn{font-size:12px;padding:3px 10px}
+.nat{padding:8px 6px;font-size:12px;gap:4px}
+@media(min-width:781px){#nats{grid-template-columns:repeat(6,112px);gap:8px}.nat{width:112px}}
+@media(max-width:780px){#nats{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;max-width:440px;gap:8px}.nat{flex-direction:row;width:auto;text-align:left;padding:6px 8px}.nat canvas{width:40px!important;height:40px!important}}
+#sd{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut)}
+#sd input{width:120px;background:rgba(255,255,255,.06);border:1px solid var(--mut);color:var(--fg);border-radius:8px;padding:4px 8px;font:inherit;font-size:13px;text-transform:uppercase}
+#sd .dbtn{padding:3px 9px}
+#cont{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(13,18,25,.96);text-align:center;padding:20px}
+#cont h1{margin:0;font-size:clamp(26px,6vw,44px);font-weight:400}
+#cont p{margin:0;color:var(--mut)}
+#cont button{background:var(--p);color:#fff;border:0;padding:12px 26px;border-radius:999px;font:inherit;font-size:17px;cursor:pointer}
+#cont .alt{background:none;border:1px solid var(--mut)}
+#msg #ms{white-space:pre-line;line-height:1.7;color:var(--fg);font-size:15px}
+#mode,#dlg{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(13,18,25,.92);text-align:center;padding:20px}
+#mode h1{margin:0;font-size:clamp(26px,6vw,44px);font-weight:400}
+#mode p{margin:0;color:var(--mut)}
+.mrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#mode button,#dlg button{background:var(--p);color:#fff;border:0;padding:12px 22px;border-radius:999px;font:inherit;font-size:16px;cursor:pointer}
+#mode .alt,#dlg .alt{background:#1b2230;border:1px solid var(--mut);color:var(--fg)}
+#dbox{display:flex;gap:14px;align-items:center;width:min(560px,92vw);min-height:130px;padding:14px;border:3px solid var(--mut);border-radius:16px;background:#151b25;text-align:left;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+#dbox canvas{width:56px;height:56px;flex:none}
+#dbox small{display:block;color:var(--mut)}
+#dt{margin:4px 0 0;font-size:18px;line-height:1.4;min-height:76px}
+#mapc{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+#dlg>:not(#mapc){position:relative;z-index:1}
+#dlg{background:#0d1219}
+#tmr{font-weight:700;font-size:18px;white-space:nowrap;padding:0 10px}
+#tmr.near{color:#7dff9c}
+#fin{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#0d1219;text-align:center;padding:20px}
+#fc{position:absolute;inset:0;width:100%;height:100%}
+#fbox{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:640px}
+#fbox h1{margin:0;font-size:clamp(40px,10vw,96px);font-weight:700;color:#ffe14a;text-shadow:0 0 24px #ffb000,0 4px 0 #000;animation:pop .9s ease-out}
+#fbox p{margin:0;font-size:clamp(15px,2.4vw,20px);line-height:1.5;color:#fff;text-shadow:0 2px 6px #000}
+#fbox .th{color:#e8d9ff}
+#fbox button{background:var(--p);color:#fff;border:0;padding:12px 28px;border-radius:999px;font:inherit;font-size:17px;cursor:pointer}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1);opacity:1}100%{transform:scale(1)}}
+#mode #sd{align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+#mode #sr{padding:8px 14px;font-size:16px}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud"><span id="lv"></span><span id="tmr"></span><span class="btns"><button id="sk">Pomiń</button> <button id="ch">Zmień państwo</button> <button id="rs">Restart</button></span></div>
+<div id="pz">Pauza<small>Naciśnij P, aby wrócić do gry</small></div>
+<div id="toast"><canvas id="tc" width="96" height="96"></canvas><div><small id="tn"></small><div id="tt"></div></div></div>
+<div id="msg"><h1 id="mt"></h1><p id="mp"></p><p id="ms"></p><button id="mb"></button></div>
+<div id="pick"><h1>CactuWars</h1><p>Wybierz państwo i poziom trudności</p><div id="diff"></div>
+<div id="tgl"><button id="tg" class="dbtn on" title="Komunikaty wrogów">Komunikaty: wł.</button> <button id="ts" class="dbtn on">Dźwięk: wł.</button> <button id="tm" class="dbtn on">Muzyka: wł.</button> <button id="td" class="dbtn on" title="Ponowne najechanie na zaznaczoną kulkę odznacza ją">Odznaczanie: wł.</button> <button id="cl" class="dbtn" title="Usuwa zapisane ustawienia i postęp">Wyczyść zapis</button></div>
+<div id="nats"></div></div>
+<div id="fin"><canvas id="fc"></canvas><div id="fbox"><h1>GRATULACJE!</h1><p>Przeszliście całą kampanię i dotarliście do krainy Weretanów.</p><p class="th">Podziękowania dla <b>Klaudiusza</b>, który zaprojektował i napisał tę grę, poprawka po poprawce.<br>Oraz dla testerów: <b>Majstra, Pawła i Stasia</b>, za cierpliwość, uwagi i niezliczone próby obrony bramy.</p><p>Dziękujemy za grę!</p><button id="fx">Wróć do menu</button></div></div>
+<div id="cont"><h1>Kontynuować poprzednią grę?</h1><p id="cp"></p><div><button id="cy">Kontynuuj</button> <button id="cn" class="alt">Nowa gra</button></div></div>
+<div id="mode"><h1>Wybierz tryb</h1><p id="mp2"></p><div class="mrow"><button id="m1">Tryb standardowy</button><button id="m2">Kampania</button></div><div id="sd" style="display:none"><label for="seed">Seed mapy</label><input id="seed" maxlength="20" autocomplete="off" spellcheck="false"><button id="sr" class="dbtn" title="Losuj nowy seed">🎲</button><button id="m3">Graj</button></div><button id="m0" class="alt">Wstecz</button></div>
+<div id="dlg"><canvas id="mapc"></canvas><div id="dbox"><canvas id="dc" width="112" height="112"></canvas><div><small id="dn"></small><p id="dt"></p></div></div><div class="mrow"><button id="dx">Dalej</button><button id="ds" class="alt">Pomiń dialog</button></div></div>
+<script>
+const cv=document.getElementById('c');let ctx=cv.getContext('2d');
+let al={};const FL=['#ff00c8','#00e5ff','#ffffff'];
+function ally(a,b){return a===b||(al[a]!==undefined&&al[a]===al[b])}
+function pt(o){return o>0&&ally(o,1)}
+function flag(x,y,k){ctx.save();ctx.lineJoin='round';ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-11);ctx.lineTo(x,y+10);ctx.stroke();ctx.fillStyle=FL[k];ctx.strokeStyle='#000c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-10);ctx.lineTo(x+17,y-10);ctx.lineTo(x+13,y-4.5);ctx.lineTo(x+17,y+1);ctx.lineTo(x,y+1);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
+let campMode=false,hz=false,spawnCd=0,nextH=0,shareNow=0,evs=[],pendN=1,raid=null,st={t:0,cap:0,lost:0,sent:0,kills:0},seed='',att=0,rnd=Math.random,bars=[],aiIdle=0,AC=null,sound=true,lastS={l:0,a:0},pct=.5,lastW=0,act=[];
+function segX(a,b,c,d){const o=(p,q,r)=>(q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x);return o(a,b,c)*o(a,b,d)<0&&o(c,d,a)*o(c,d,b)<0}
+function blocked(a,b){return bars.some(w=>segX(a,b,{x:w.x1,y:w.y1},{x:w.x2,y:w.y2}))}
+function dSeg(p,w){const dx=w.x2-w.x1,dy=w.y2-w.y1,t=Math.max(0,Math.min(1,((p.x-w.x1)*dx+(p.y-w.y1)*dy)/(dx*dx+dy*dy)));return Math.hypot(p.x-w.x1-t*dx,p.y-w.y1-t*dy)}
+function connected(){const seen=new Set([0]),q=[0];while(q.length){const i=q.pop();cells.forEach((c,j)=>{if(!seen.has(j)&&!blocked(cells[i],c)){seen.add(j);q.push(j)}})}return seen.size===cells.length}
+const DIFF=[{n:'Łatwy',t:.5,ai:.9,th:1.8,ps:36,id:22,rd:.6},{n:'Normalny',t:.75,ai:.3,th:1.3,ps:28,id:18,rd:.8},{n:'Trudny',t:1.15,ai:-.1,th:1.1,ps:24,id:12,rd:1}];let diff=1;
+const BC={0:'#8a8f94',1:'#3a8bff',2:'#f2c600',3:'#ff9ec7',4:'#9b83c9',5:'#ee7a1c',6:'#a6e22e',7:'#2a8a48',8:'#e8ecf4',9:'#5db4cf',10:'#e8352b',11:'#5a6272',12:'#33ffb8',13:'#c85bd0'},BN={1:'Królestwo Oka Pawła',2:'Herbaciany Ranfisz',3:'Mech Mechutea',4:'Królestwo Spinacza Tomka',5:'Państwo Mur Mira',6:'Atomowe Imperium Klimaxa',7:'Imperium Promotora Pooshka',8:'Królestwo Furry Felix',9:'Elektryczna Kraina Majstra',10:'Sigma Imperium Stasia',11:'Czarne Księstwo Blackiego',12:'Horda Somki',13:'Dominium Fleur'};
+let COL={...BC},NAME={...BN},map=[0,1,2,3,4,5];
+function setNation(n){{const a=NAT.filter(k=>k!==n);while(a.length>10)a.splice(mkRng(hs(seed+':nat'))()*a.length|0,1);map=[0,n,...a,12]}COL={0:BC[0]};NAME={};for(let o=1;o<=12;o++){COL[o]=BC[map[o]];NAME[o]=BN[map[o]]}}
+function eyes(y,k,ox){[-1,1].forEach(d=>{const ex=d*.4+(ox||0);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ex,y,.3*k,0,7);ctx.fill();ctx.stroke();ctx.fillStyle='#111';ctx.beginPath();ctx.arc(ex+.05,y+.03,.13*k,0,7);ctx.fill()})}
+function ln(pts,w,c){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke()}
+function frogFace(col){
+  ctx.fillStyle='#000b';ctx.beginPath();ctx.ellipse(0,.2,1.06,.68,0,0,7);ctx.fill();[-1,1].forEach(d=>{ctx.beginPath();ctx.arc(d*.5,-.38,.42,0,7);ctx.fill()});
+  ctx.fillStyle=col;ctx.beginPath();ctx.ellipse(0,.2,1,.62,0,0,7);ctx.fill();[-1,1].forEach(d=>{ctx.beginPath();ctx.arc(d*.5,-.38,.35,0,7);ctx.fill()});
+  ctx.strokeStyle='#000b';ctx.lineWidth=.07;
+  [-1,1].forEach(d=>{ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(d*.5,-.4,.26,.3,0,0,7);ctx.fill();ctx.stroke();ctx.fillStyle='#0a0a10';ctx.beginPath();ctx.arc(d*.5-d*.04,-.34,.1,0,7);ctx.fill()});
+  ctx.fillStyle='#000b';[-1,1].forEach(d=>{ctx.beginPath();ctx.arc(d*.1,.05,.035,0,7);ctx.fill()});
+  ctx.beginPath();ctx.moveTo(-.8,.3);ctx.quadraticCurveTo(0,.44,.8,.3);ctx.stroke();
+}
+function sym(o,x,y,r,col){
+  const s=r*.62;ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.lineWidth=.07;ctx.strokeStyle='#000b';ctx.lineJoin=ctx.lineCap='round';
+  if(o===0){
+    [[[[0,.75],[0,-.6]],.55],[[[0,.2],[-.6,.2],[-.6,-.3]],.3],[[[0,-.1],[.6,-.1],[.6,-.55]],.3]].forEach(a=>ln(a[0],a[1]+.14,'#2b3a22'));
+    [[[[0,.75],[0,-.6]],.55],[[[0,.2],[-.6,.2],[-.6,-.3]],.3],[[[0,-.1],[.6,-.1],[.6,-.55]],.3]].forEach(a=>ln(a[0],a[1],'#8fa87a'));
+    ctx.fillStyle='#e86a9a';ctx.beginPath();ctx.arc(0,-.72,.14,0,7);ctx.fill();
+  }else if(o===1){
+    ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(0,1);
+    ctx.bezierCurveTo(.6,1,1,.6,.95,.15);ctx.bezierCurveTo(.9,-.2,.7,-.35,.8,-.75);ctx.bezierCurveTo(.5,-.6,.4,-.5,.35,-.3);
+    ctx.bezierCurveTo(.3,-.6,.1,-.9,.05,-1.25);ctx.bezierCurveTo(-.15,-.85,-.3,-.7,-.35,-.45);ctx.bezierCurveTo(-.55,-.55,-.7,-.5,-.8,-.7);
+    ctx.bezierCurveTo(-.85,-.4,-.95,-.1,-.95,.2);ctx.bezierCurveTo(-1,.6,-.6,1,0,1);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#f4f8ff';ctx.beginPath();ctx.arc(0,.3,.55,0,7);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#0a0a10';ctx.beginPath();ctx.arc(0,.3,.3,0,7);ctx.fill();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-.1,.2,.07,0,7);ctx.fill();
+  }else if(o===2){
+    ctx.save();ctx.translate(-.28,.02);ctx.scale(.85,.85);ctx.fillStyle=col;ctx.beginPath();ctx.arc(0,0,.92,0,7);ctx.fill();ctx.stroke();eyes(-.08,1.3);ctx.restore();
+    ctx.beginPath();ctx.arc(.93,.3,.14,-1.5,1.5);ctx.strokeStyle='#000b';ctx.lineWidth=.17;ctx.stroke();ctx.strokeStyle='#d62f2f';ctx.lineWidth=.08;ctx.stroke();
+    ctx.strokeStyle='#000b';ctx.lineWidth=.07;ctx.fillStyle='#d62f2f';ctx.beginPath();ctx.moveTo(.45,.05);ctx.lineTo(.92,.05);ctx.lineTo(.84,.6);ctx.lineTo(.53,.6);ctx.closePath();ctx.fill();ctx.stroke();
+  }else if(o===3){
+    ctx.save();ctx.translate(0,.05);ctx.scale(1,1);
+    const bs=[[-.7,.3,.38],[-.25,.3,.4],[.25,.3,.4],[.7,.3,.38],[-.5,-.1,.46],[0,-.15,.52],[.5,-.1,.46],[-.28,-.58,.38],[.3,-.55,.4]];
+    ctx.fillStyle='#000b';ctx.fillRect(-.98,.15,1.96,.63);bs.forEach(c=>{ctx.beginPath();ctx.arc(c[0],c[1],c[2]+.06,0,7);ctx.fill()});
+    ctx.fillStyle='#55c24a';ctx.fillRect(-.92,.15,1.84,.57);bs.forEach(c=>{ctx.beginPath();ctx.arc(c[0],c[1],c[2],0,7);ctx.fill()});
+    [[-.6,.45,-.5,.3],[.6,.45,.5,.3],[-.3,-.5,-.2,-.38],[.45,-.38,.35,-.26],[0,.62,.1,.5]].forEach(a=>ln([[a[0],a[1]],[a[2],a[3]]],.06,'#3d9a38'));
+    [-1,1].forEach(d=>{ctx.fillStyle='#0a0a10';ctx.beginPath();ctx.arc(d*.33,-.12,.2,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(d*.33-.06,-.18,.055,0,7);ctx.fill()});
+    ctx.strokeStyle='#000b';ctx.lineWidth=.07;ctx.fillStyle='#7a1030';ctx.beginPath();ctx.moveTo(-.3,.12);ctx.lineTo(.3,.12);ctx.arc(0,.12,.3,0,Math.PI);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#ff7aa8';ctx.beginPath();ctx.arc(0,.33,.09,0,7);ctx.fill();
+    [[-.75,.12,.8],[-.2,-.72,.9],[.55,-.5,1],[.85,.25,.75],[-.5,.5,.7],[.45,.55,.85]].forEach(f=>{const k=f[2];for(let q=0;q<5;q++){const a=q*Math.PI*2/5+f[0];ctx.fillStyle='#ff6fa8';ctx.beginPath();ctx.arc(f[0]+Math.cos(a)*.12*k,f[1]+Math.sin(a)*.12*k,.09*k,0,7);ctx.fill();ctx.lineWidth=.04;ctx.stroke()}ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.arc(f[0],f[1],.06*k,0,7);ctx.fill()});
+    ctx.restore();
+  }else if(o===4){
+    ctx.save();ctx.translate(0,.21);ctx.rotate(.3);ctx.scale(.7,.7);
+    const p=()=>{ctx.beginPath();ctx.moveTo(-.15,.15);ctx.lineTo(-.15,-1.1);ctx.arc(.05,-1.1,.2,Math.PI,0);ctx.lineTo(.25,.65);ctx.arc(-.05,.65,.3,0,Math.PI);ctx.lineTo(-.35,-1.3);ctx.arc(-.1,-1.3,.25,Math.PI,0);ctx.stroke()};
+    ctx.strokeStyle='#000b';ctx.lineWidth=.3;p();ctx.strokeStyle=col;ctx.lineWidth=.17;p();
+    ctx.restore();ctx.lineWidth=.07;ctx.strokeStyle='#000b';eyes(-.75,.82,.22);
+  }else if(o===6){
+    const orb=()=>{for(let i=0;i<3;i++){ctx.beginPath();ctx.ellipse(0,0,1,.38,i*Math.PI/3,0,7);ctx.stroke()}};
+    ctx.strokeStyle='#000b';ctx.lineWidth=.2;orb();ctx.strokeStyle=col;ctx.lineWidth=.09;orb();
+    ctx.strokeStyle='#000b';ctx.lineWidth=.06;
+    for(let i=0;i<3;i++){const t=[.6,2.2,4.1][i],ri=i*Math.PI/3,u=Math.cos(t),v=.38*Math.sin(t),ex=u*Math.cos(ri)-v*Math.sin(ri),ey=u*Math.sin(ri)+v*Math.cos(ri);ctx.fillStyle=col;ctx.beginPath();ctx.arc(ex,ey,.13,0,7);ctx.fill();ctx.stroke()}
+    ctx.lineWidth=.07;ctx.fillStyle=col;ctx.beginPath();ctx.arc(0,0,.46,0,7);ctx.fill();ctx.stroke();
+    [-1,1].forEach(d=>{ctx.fillStyle='#fff';ctx.lineWidth=.04;ctx.beginPath();ctx.arc(d*.18,-.08,.14,0,7);ctx.fill();ctx.stroke();ctx.fillStyle='#0a0a10';ctx.beginPath();ctx.arc(d*.18,-.06,.07,0,7);ctx.fill()});
+    ctx.lineWidth=.06;ctx.beginPath();ctx.arc(0,.05,.2,.35,Math.PI-.35);ctx.stroke();
+  }else if(o===7){
+    frogFace(col);
+  }else if(o===8){
+    const P=(a,c)=>{ctx.fillStyle=c;ctx.beginPath();a.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fill()};
+    P([[-.9,-1],[-.4,-.4],[.4,-.4],[.9,-1],[1,.1],[.4,.6],[0,.95],[-.4,.6],[-1,.1]],col);ctx.stroke();
+    P([[-.4,-.4],[.4,-.4],[0,.15]],'#aeb6c2');
+    [-1,1].forEach(d=>P([[d*.75,-.78],[d*.45,-.42],[d*.85,-.3]],'#6b7280'));
+    ctx.fillStyle='#0a0a10';[-1,1].forEach(d=>{ctx.beginPath();ctx.ellipse(d*.4,-.05,.14,.08,d*.5,0,7);ctx.fill()});
+    ctx.beginPath();ctx.arc(0,.75,.1,0,7);ctx.fill();
+  }else if(o===9){
+    const cc=[[-.55,-.05,.38],[-.05,-.3,.5],[.5,-.05,.4]];
+    ctx.fillStyle='#000b';cc.forEach(c=>{ctx.beginPath();ctx.arc(c[0],c[1],c[2]+.07,0,7);ctx.fill()});ctx.fillRect(-.62,-.12,1.19,.52);
+    ctx.fillStyle=col;cc.forEach(c=>{ctx.beginPath();ctx.arc(c[0],c[1],c[2],0,7);ctx.fill()});ctx.fillRect(-.55,-.05,1.05,.38);
+    [-.28,.34].forEach(x=>{ctx.save();ctx.translate(x,.3);ctx.scale(.8,.8);ctx.fillStyle='#ffe14a';ctx.lineWidth=.06;ctx.beginPath();ctx.moveTo(.1,0);ctx.lineTo(-.15,.38);ctx.lineTo(0,.38);ctx.lineTo(-.1,.78);ctx.lineTo(.17,.3);ctx.lineTo(.03,.3);ctx.lineTo(.2,0);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()});
+    [-.65,.05,.75].forEach(x=>ln([[x,.5],[x-.05,.72]],.05,'#bfe3ff'));
+  }else if(o===10){
+    ctx.fillStyle=col;ctx.beginPath();ctx.ellipse(0,1,.95,.42,0,Math.PI,0);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#f0c8a0';[-1,1].forEach(d=>{ctx.beginPath();ctx.arc(d*.7,-.1,.12,0,7);ctx.fill();ctx.stroke()});
+    ctx.beginPath();ctx.arc(0,-.15,.7,0,7);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#3a2a22';ctx.beginPath();ctx.moveTo(.63,.15);ctx.arc(0,-.15,.7,.45,Math.PI-.45);ctx.quadraticCurveTo(0,.25,.63,.15);ctx.fill();
+    [-1,1].forEach(d=>{ctx.beginPath();ctx.ellipse(d*.17,.07,.2,.07,d*-.25,0,7);ctx.fill()});
+    ctx.fillStyle='#0a0a10';[-1,1].forEach(d=>{ctx.beginPath();ctx.arc(d*.25,-.2,.06,0,7);ctx.fill()});
+    ln([[-.42,-.34],[-.12,-.28]],.07,'#3a2a22');ln([[.12,-.28],[.42,-.34]],.07,'#3a2a22');
+    ctx.fillStyle='#ffffff66';ctx.beginPath();ctx.ellipse(-.22,-.7,.16,.07,-.4,0,7);ctx.fill();
+  }else if(o===11){
+    ctx.fillStyle='#161920';ctx.strokeStyle='#cfd5e0';ctx.lineWidth=.07;
+    ctx.beginPath();ctx.ellipse(0,1,.95,.62,0,Math.PI,0);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillRect(-.17,.1,.34,.35);ln([[-.17,.15],[-.17,.4]],.07,'#cfd5e0');ln([[.17,.15],[.17,.4]],.07,'#cfd5e0');
+    ctx.fillStyle='#161920';ctx.strokeStyle='#cfd5e0';ctx.lineWidth=.07;ctx.beginPath();ctx.arc(0,-.28,.44,0,7);ctx.fill();ctx.stroke();
+  }else if(o===12){
+    ctx.fillStyle='#9aa070';ctx.strokeStyle='#000b';ctx.lineWidth=.07;
+    [-1,1].forEach(d=>{ctx.beginPath();ctx.moveTo(d*.6,-.05);ctx.lineTo(d*1.1,-.5);ctx.lineTo(d*.72,.2);ctx.closePath();ctx.fill();ctx.stroke()});
+    ctx.beginPath();ctx.ellipse(0,.1,.7,.8,0,0,7);ctx.fill();ctx.stroke();
+    ctx.fillStyle=col;[[-.28,.35],[0,.45],[.28,.35]].forEach(p=>{ctx.beginPath();ctx.moveTo(p[0]-.12,-.62);ctx.lineTo(p[0],-.62-p[1]);ctx.lineTo(p[0]+.12,-.62);ctx.closePath();ctx.fill();ctx.stroke()});
+    [-1,1].forEach(d=>{ctx.fillStyle='#ffe14a';ctx.beginPath();ctx.arc(d*.27,-.2,.1,0,7);ctx.fill();ctx.stroke();ctx.fillStyle='#000';ctx.beginPath();ctx.arc(d*.27,-.18,.045,0,7);ctx.fill()});
+    ln([[-.45,-.42],[-.12,-.3]],.09,'#3a3a22');ln([[.12,-.3],[.45,-.42]],.09,'#3a3a22');
+    ctx.fillStyle='#8a9060';ctx.strokeStyle='#000b';ctx.lineWidth=.07;ctx.beginPath();ctx.arc(0,.12,.2,0,7);ctx.fill();ctx.stroke();
+    ln([[-.38,.52],[.38,.52]],.07,'#000b');
+    ctx.fillStyle='#fff';ctx.strokeStyle='#000b';ctx.lineWidth=.05;[-1,1].forEach(d=>{ctx.beginPath();ctx.moveTo(d*.14,.52);ctx.lineTo(d*.3,.52);ctx.lineTo(d*.22,.3);ctx.closePath();ctx.fill();ctx.stroke()});
+  }else if(o===13){
+    ctx.lineJoin='round';ctx.fillStyle='#58b368';ctx.strokeStyle='#000b';ctx.lineWidth=.06;
+    [[-.32,-.66,-.5],[.05,-.7,.4]].forEach(l=>{ctx.save();ctx.translate(l[0],l[1]);ctx.rotate(l[2]);ctx.beginPath();ctx.ellipse(0,0,.26,.11,0,0,7);ctx.fill();ctx.stroke();ctx.restore()});
+    ctx.fillStyle=col;ctx.lineWidth=.07;ctx.beginPath();ctx.arc(0,.15,.78,0,7);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#ffffff55';ctx.beginPath();ctx.ellipse(-.38,-.22,.13,.2,.5,0,7);ctx.fill();
+    ctx.fillStyle='#ff9ec7aa';[-1,1].forEach(d=>{ctx.beginPath();ctx.ellipse(d*.46,.36,.15,.09,0,0,7);ctx.fill()});
+    ctx.fillStyle='#1a0f1f';[-1,1].forEach(d=>{ctx.beginPath();ctx.arc(d*.27,.12,.1,0,7);ctx.fill()});
+    ctx.fillStyle='#fff';[-1,1].forEach(d=>{ctx.beginPath();ctx.arc(d*.27-.03,.09,.035,0,7);ctx.fill()});
+    ctx.strokeStyle='#1a0f1f';ctx.lineWidth=.06;ctx.beginPath();ctx.arc(0,.28,.14,.3,Math.PI-.3);ctx.stroke();
+    ctx.strokeStyle='#000b';ctx.lineWidth=.05;
+    for(let i=0;i<5;i++){const a=-Math.PI/2+i*Math.PI*2/5;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(.34+Math.cos(a)*.15,-.66+Math.sin(a)*.15,.12,0,7);ctx.fill();ctx.stroke()}
+    ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.arc(.34,-.66,.09,0,7);ctx.fill();
+  }else{
+    ctx.translate(.15,0);ctx.fillStyle='#b4b9bf';ctx.beginPath();ctx.arc(.35,0,.45,0,7);ctx.fill();ctx.stroke();
+    [.37,.59].forEach(ex=>{ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ex,-.1,.14,0,7);ctx.fill();ctx.stroke();ctx.fillStyle='#111';ctx.beginPath();ctx.arc(ex+.03,-.08,.06,0,7);ctx.fill()});
+    ctx.strokeStyle='#7a3a0a';ctx.lineWidth=.05;ctx.beginPath();ctx.arc(.48,.05,.12,.3,Math.PI-.3);ctx.stroke();ctx.strokeStyle='#000b';ctx.lineWidth=.07;
+    const x0=-1.1,w=1.3;ctx.fillStyle=col;ctx.fillRect(x0,-.7,w,1.4);ctx.strokeRect(x0,-.7,w,1.4);
+    ctx.strokeStyle='#5a2a08';ctx.beginPath();
+    for(let i=0;i<3;i++){const y0=-.7+i*.4667;if(i){ctx.moveTo(x0,y0);ctx.lineTo(x0+w,y0)}(i%2?[.17,.5,.83]:[.33,.67]).forEach(j=>{ctx.moveTo(x0+w*j,y0);ctx.lineTo(x0+w*j,y0+.4667)})}
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+let W,H,cells,units,level=1,state='play',drag=null,ptr={x:0,y:0},aiT=0,last=0,dpr=1;
+function resize(){dpr=devicePixelRatio||1;W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener('resize',()=>{resize();layout()});
+const LW=1200,LH=700;let sc=1,ox=0,oy=0,fc=0;
+function layout(){const hh=document.getElementById('hud').offsetHeight+4,ah=H-hh-26;sc=Math.max(.1,Math.min(W/LW,ah/LH));ox=(W-LW*sc)/2;oy=hh+(ah-LH*sc)/2}
+function deco(c){
+  if(!c.type)return;ctx.save();ctx.fillStyle='#f1ead6';ctx.strokeStyle='#000b';ctx.lineWidth=1.5;
+  const n=c.type===1?14:c.type===2?10:6;
+  for(let i=0;i<n;i++){const a=i*2*Math.PI/n;ctx.save();ctx.translate(c.x+Math.cos(a)*(c.r+3),c.y+Math.sin(a)*(c.r+3));ctx.rotate(a);ctx.beginPath();
+    if(c.type===1)ctx.rect(0,-4,8,8);else if(c.type===2)ctx.arc(4,0,3.5,0,7);else{ctx.moveTo(0,-6);ctx.lineTo(11,0);ctx.lineTo(0,6);ctx.closePath()}
+    ctx.fill();ctx.stroke();ctx.restore()}
+  ctx.restore();
+}
+const SAVEKEY='cactuwars.save.v1';
+function saveGame(){try{localStorage.setItem(SAVEKEY,JSON.stringify({ver:1,camp:campMode?1:0,cfg:{music,sound,taunts,deselect,diff},seed,level,att,nation:map[1],game:seed?1:0}))}catch(e){}}
+function loadSave(){
+  try{
+    const o=JSON.parse(localStorage.getItem(SAVEKEY));
+    if(!o||typeof o!=='object'||(o.ver!==undefined&&o.ver!==1))return null;
+    const c=o.cfg&&typeof o.cfg==='object'?o.cfg:{},b=x=>x!==false;
+    const r={cfg:{music:b(c.music),sound:b(c.sound),taunts:b(c.taunts),deselect:b(c.deselect),diff:[0,1,2].includes(c.diff)?c.diff:1},game:0};
+    const ok=o.game===1&&Number.isInteger(o.level)&&o.level>=1&&o.level<=999&&Number.isInteger(o.att)&&o.att>=0&&o.att<=999&&Number.isInteger(o.nation)&&o.nation>=1&&(o.nation<=11||o.nation===13)&&typeof o.seed==='string'&&o.seed.length>=1&&o.seed.length<=20;
+    if(ok){r.camp=o.camp===1?1:0;r.game=1;r.level=o.level;r.att=o.att;r.nation=o.nation;r.seed=o.seed}
+    return r;
+  }catch(e){return null}
+}
+function syncUI(){[['tg','Komunikaty',taunts],['ts','Dźwięk',sound],['tm','Muzyka',music],['td','Odznaczanie',deselect]].forEach(a=>{const b=document.getElementById(a[0]);b.classList.toggle('on',a[2]);b.textContent=a[1]+': '+(a[2]?'wł.':'wył.')})}
+const BGS=[['#344052','#191e25'],['#2f4a3c','#17211c'],['#4a3246','#20171f'],['#4d4032','#211b15'],['#2d4b4f','#142326'],['#3c3f48','#1a1b1f'],['#3a3457','#1a1728']];
+const CAMP=[
+{title:'Wyprawa',r:[2],np:1,ec:2,T:30,nn:5,nb:0,sp:0,
+ intro:[['N','Od trzech lat nad pustynią nie spadła ani kropla deszczu. Studnie wysychają, a wasz lud ma zapasów na jeden rok.'],['P','Kronikarzu, mówiłeś, że jest miejsce, gdzie woda nigdy się nie kończy.'],['N','Kraina Weretanów. Weretani zbudowali sieć studni, zanim zniknęli. Zostawili mapę rozdartą na pięć części i powierzyli ją pięciu strażnikom.'],['N','Żeby ją odczytać, trzeba zebrać wszystkie. Droga zaczyna się za źródłem, które zajął rywal — {A}.'],[0,'To źródło jest nasze. Nasz lud też umiera z pragnienia i nie mamy dokąd się cofnąć.'],['P','My też. Dlatego musimy tamtędy przejść.']],
+ post:[[0,'Przegraliśmy uczciwie. Wiedzcie, że mapa zaczyna się za przełęczą. Pierwszego strażnika znajdziecie w starej twierdzy.'],['N','Wyprawa ruszyła na wschód, ku przełęczy.']],
+ ev:[{t:30,k:'say',s:0,m:'Nie cofniemy się ani o krok.'}]},
+{title:'Przełęcz Strażników',r:[3],np:1,ec:3,T:38,nn:8,nb:1,sp:0,
+ intro:[['N','Droga na wschód prowadziła przez przełęcz, którą zamykał strażnik — {B}. Pilnował jej od lat, zgodnie ze starym traktatem.'],[1,'Przełęcz jest zamknięta na mocy traktatu. Nikt nie przejdzie bez zgody Rady.'],['P','Rady, której nie ma od stu lat?'],[1,'Traktat nie wygasł. Przepisy to przepisy.']],
+ post:[[1,'Przeszliście. W protokole zapiszemy, że to była siła wyższa.'],['N','Za przełęczą rozciągała się równina pełna kurzu i ciszy.']],
+ ev:[{t:40,k:'say',s:1,m:'Zgodnie z przepisami wzywamy straż!'}]},
+{title:'Obcy sojusznik',r:[2,3,4],al:4,pairs:[[2,3]],np:2,ec:5,T:80,nn:7,nb:2,sp:.15,
+ intro:[['N','Na równinie czekał rywal — {A}, który zawarł pakt ze strażnikiem przełęczy — {B}. Obie nacje uznały, że razem łatwiej was zatrzymają.'],[0,'Nie przyszliśmy tu dla zysku, tylko po wodę. Ale was nie przepuścimy.'],[1,'Zgodnie z paktem odmawiamy wam przejścia.'],['N','Z południa nadszedł wędrowny oddział — {C}.'],[2,'Szukamy tego samego co wy i nie przepadamy za murami. Jeśli macie miejsce przy ognisku, dołączamy.'],['P','Mamy miejsce. I potrzebujemy waszej pomocy.']],
+ post:[[2,'Dobrze nam z wami. A mówiąc szczerze, z wami przynajmniej nie nudzimy się w drodze.'],['N','Tak zaczął się sojusz, który miał zmienić bieg wyprawy.']],
+ ev:[{t:20,k:'say',s:2,m:'Spokojnie, osłaniamy wasze skrzydło. I nie zjadamy waszych zapasów.'},{t:80,k:'gift',s:2,n:14,m:'Wysyłamy wam wsparcie!'}]},
+{title:'Burza piaskowa',r:[2,3,4,5],al:4,pairs:[[2,3]],np:2,ec:6,T:105,nn:8,nb:3,sp:.2,
+ intro:[['N','Za równiną zaczynał się okres burz piaskowych, który nad pustynią wraca co roku. Znał go lepiej niż ktokolwiek władca burz — {D}.'],[3,'Wiatr nie ma wrogów. Każdy, kto idzie pod prąd, w końcu staje.'],['P','Nie mamy czasu czekać na wiatr.'],[3,'Tak mówią wszyscy. A potem pustynia ich uczy.']],
+ post:[[3,'Wygraliście. Ale wiatr jeszcze się nie skończył.'],[2,'Spójrzcie, na horyzoncie widać mury twierdzy.']],
+ ev:[{t:35,k:'quake',s:3,m:'Wiatr zmiótł mury! Teraz wszyscy stoimy na gołej ziemi!'},{t:70,k:'reinf',s:3,r:3,n:15,m:'Posiłki ze wschodu!'},{t:95,k:'gift',s:2,n:12,m:'Wysyłamy wsparcie!'}]},
+{title:'Brama twierdzy',r:[2,4,6],al:4,pairs:[[2,6]],np:2,ec:6,T:130,nn:7,nb:2,sp:.2,raid:{t:45,n:70},
+ intro:[['N','U bram starej twierdzy stał zarządca bram — {E}. Nosił wszystkie swoje tytuły naraz i uwielbiał je wymieniać.'],[4,'Ja, Zarządca Wrót, Strażnik Pierwszej Części, Pan Kluczy! Mówię wam: nie przejdziecie!'],[0,'Jeśli mapa ma trafić do jednego rodu, niech to będziemy my. Dołączamy do niego.'],[2,'A my ruszamy z wami. Do bramy!'],['N','W oddali rozległ się tupot, jakby sama ziemia się zbliżała.']],
+ post:[[4,'Brama jest wasza! Zabierzcie pierwszą część mapy. Nigdy nie wspominajcie, że Zarządca przegrał.'],['H','Pierwszy sprawdzian zaliczony. Masz rajda!'],['N','Pierwsza część mapy wskazywała kierunek: Kanion Szeptów. Koniec rozdziału I.']],
+ ev:[{t:30,k:'say',s:4,m:'Przez te wrota przechodzili tylko najlepsi!'},{t:38,k:'say',s:'H',m:'Idą ci, którzy szukają Weretanów. Zobaczymy, czy na to zasługują.'}]},
+{title:'Zejście do kanionu',r:[2,4],al:4,np:2,ec:6,T:120,nn:7,nb:2,sp:.3,
+ intro:[['N','Rozdział II. Druga część mapy leżała w Kanionie Szeptów, gdzie echo roznosi każde słowo na wiele mil. Na krawędzi czekał rywal — {A} ze świeżo zebraną armią.'],[0,'Pierwsza część mapy nie przesądziła o niczym. Nie pozwolimy wam zejść do kanionu.'],[2,'Jeśli rozbijemy ich siły na krawędzi, kanion będzie nasz. Do dzieła.']],
+ post:[[0,'Dosyć. Wasz lud też cierpi, prawda? Poznaliśmy to w boju.'],['N','Echo niosło po kanionie szepty niepokoju.']],
+ ev:[{t:35,k:'say',s:0,m:'Nasza armia jest większa niż wasza!'}]},
+{title:'Echo',r:[2,5,4],al:4,pairs:[[2,5]],np:2,ec:7,T:135,nn:8,nb:2,sp:.2,
+ intro:[['N','W kanionie echo niosło każde słowo. Władca burz — {D} wysłał posłańca z propozycją.'],[3,'Wiatr uczy, że nie wolno walczyć z tym, co silniejsze. Przemyślimy, po której stronie stanąć.'],['P','Nie prosimy o posłuszeństwo. Prosimy o zaufanie.']],
+ post:[[3,'Zdecydowaliśmy. Nasi zwiadowcy będą wam służyć.'],['N','W kanionie narodził się nowy sojusz. Ale każdy sojusz trzeba wypróbować.']],
+ ev:[{t:20,k:'say',s:3,m:'Wiatr szepcze, że jesteście uczciwi.'},{t:60,k:'team',s:3,x:3,w:'P',m:'Zmieniamy kierunek. Stajemy po właściwej stronie.'}]},
+{title:'Miasto w skale',r:[3],np:3,ec:4,T:62,nn:8,nb:2,sp:.1,relic:true,rt:1,hm:.85,
+ intro:[['N','W głębi kanionu stało Miasto w Skale, dawne archiwum Weretanów. Druga część mapy leżała w jego twierdzy, oznaczonej na planie gwiazdą.'],[1,'Zgodnie z zasadami miasto jest nietykalne. Atak na twierdzę z gwiazdą oznacza wyrok.'],['P','Nie musimy zdobywać całego miasta. Wystarczy twierdza.']],
+ post:[[1,'Twierdza upadła. W protokole zapiszemy, że daliśmy się pokonać z honorem.'],['N','W archiwum znaleziono zapis: Weretani nie podbijali ziem, tylko łączyli ludy wokół wody.']],
+ ev:[{t:40,k:'say',s:1,m:'Twierdza z gwiazdą wytrzyma każdy atak!'},{t:45,k:'reinf',s:1,r:1,n:12,rl:1,m:'Posiłki do twierdzy!'},{t:85,k:'reinf',s:1,r:1,n:12,rl:1,m:'Kolejne posiłki do twierdzy!'}]},
+{title:'Zdrada',r:[3,6,4],al:4,pairs:[[3,6]],np:2,ec:6,T:95,nn:7,nb:2,sp:.2,
+ intro:[['N','Pod miastem zebrali się strażnik — {B} i zarządca bram — {E}. Zawarli sojusz i zażądali, żebyście zrezygnowali z wyprawy.'],[1,'Traktat jest jasny: jedna część mapy na jeden ród.'],[4,'Wasza wyprawa zagraża porządkowi wszystkich rodów!'],[2,'Z domu przyszła wiadomość, która nie daje nam spokoju. Musimy wkrótce podjąć decyzję.']],
+ post:[[2,'Nie chcieliśmy tego robić. Nasz lud był w niebezpieczeństwie.'],['N','Zdrada boli bardziej niż wróg w polu. Ale droga na nikogo nie czeka.']],
+ ev:[{t:40,k:'say',s:2,m:'Nasz lud jest w niebezpieczeństwie. Nie wiemy, co robić.'},{t:90,k:'team',s:2,x:2,w:3,atk:1,m:'Wybaczcie. Tamci obiecali ochronę naszemu ludowi. Od tej chwili walczymy po ich stronie!'}]},
+{title:'Strażnik kanionu',r:[3,6,5],al:5,pairs:[[3,6]],np:2,ec:7,T:140,nn:6,nb:3,sp:.3,raid:{t:60,n:75},
+ intro:[['N','Wyjścia z kanionu pilnował strażnik — {B} wraz z zarządcą bram — {E}. Po waszej stronie wrócił władca burz — {D}.'],[3,'Wiatr zmienił kierunek. Stoimy po waszej stronie.'],[1,'Zgodnie z traktatem odmawiamy wam przejścia!'],[4,'A ja dodam: z najwyższymi honorami!'],['P','Nie chcemy walczyć, ale nie mamy wyboru.']],
+ post:[[1,'Zabierzcie drugą część mapy. Zapiszemy to jako wyjątek.'],['H','Drugi sprawdzian zaliczony. Masz rajda!'],['N','Druga część mapy wskazywała kierunek: Morze Soli. Koniec rozdziału II.']],
+ ev:[{t:30,k:'say',s:1,m:'Przepisy nie przewidują waszego przejścia!'},{t:50,k:'say',s:'H',m:'Ruszamy w waszą stronę. Zaraz zobaczycie, co potrafimy.'},{t:70,k:'gift',s:3,n:14,m:'Nasi zwiadowcy niosą wsparcie!'}]},
+{title:'Morze Soli',r:[2,6],np:2,ec:6,T:130,nn:8,nb:2,sp:.15,
+ intro:[['N','Rozdział III. Morze Soli było dawnym jeziorem, które wyschło. Tu mapa kazała szukać trzeciej części.'],['P','Dalej idziemy sami. Władca burz wrócił do swoich.'],[0,'Znowu wy? My mamy już własną część mapy i nie oddamy jej bez walki.'],[4,'A my mamy tytuł do tej soli! Mówię: Zarządca Solnych Szlaków, Pan Wszystkich Kryształów!']],
+ post:[[0,'Dosyć. Jeśli przegrywamy z wami, to może Weretani naprawdę wybierają tych, którzy idą razem.'],['N','Rywale okazali się takimi samymi poszukiwaczami. Każdy z nich miał własny powód.']],
+ ev:[{t:35,k:'say',s:4,m:'Sól niszczy każdą armię, nie tylko waszą.'}]},
+{title:'Przeprawa',r:[3,6],pairs:[[3,6]],np:3,ec:4,T:75,nn:7,nb:2,sp:.15,
+ intro:[['N','Przez Morze Soli prowadziła tylko jedna droga, zablokowana przez strażnika — {B} i zarządcę bram — {E}.'],[1,'Solna droga jest własnością Rady. Wstęp tylko za zgodą.'],[4,'A zgoda kosztuje!'],['P','Nie mamy czym płacić. Mamy tylko determinację.']],
+ post:[[1,'Zapiszemy: przeprawa zaliczona. Przepisy tego nie przewidywały.'],['N','Droga na drugą stronę stała otworem.']],
+ ev:[{t:30,k:'say',s:1,m:'Przeprawa jest zamknięta!'},{t:45,k:'quake',s:1,m:'Solne mury runęły pod własnym ciężarem!'}]},
+{title:'Solniska',r:[2,3],pairs:[[2,3]],np:3,ec:5,T:85,nn:8,nb:2,sp:.1,sv:180,hm:.7,raid:{t:100,n:55},
+ intro:[['N','Na solniskach rozbito obóz. Konwój z zapasami miał dotrzeć za trzy minuty, ale do tego czasu trzeba było utrzymać pozycję.'],[0,'Nie dostaniecie wody! Zajmiemy wasz obóz!'],[1,'Obozowanie na solniskach jest zakazane przepisami!'],['P','Wytrzymajcie trzy minuty. Konwój jest tuż za nami.']],
+ post:[['N','Konwój dotarł. Woda i zapasy uratowały wyprawę.'],['P','Idziemy dalej.']],
+ ev:[{t:60,k:'say',s:'H',m:'Obóz bez murów? Doskonale.'},{t:120,k:'reinf',s:0,r:0,n:12,m:'Przyszły posiłki!'},{t:160,k:'reinf',s:1,r:1,n:12,m:'Atakujemy z drugiej strony!'}]},
+{title:'Powrót wędrowców',r:[4,2,3],pairs:[[4,2]],np:2,ec:6,T:105,nn:8,nb:2,sp:.2,
+ intro:[['N','Drogę zagrodzili dwaj starzy znajomi: rywal — {A} i wędrowny sojusznik — {C}, który zdradził was pod miastem w skale.'],[2,'Wiemy, że zawiedliśmy. Mieliśmy dług u waszych wrogów. Już go spłaciliśmy.'],['P','Dlaczego mamy wam ufać?'],[2,'Bo tym razem to my się pomyliliśmy, a nie wy. Wróćmy do siebie.']],
+ post:[[2,'Dziękujemy, że daliście nam drugą szansę.'],['N','Zaufanie wróciło, choć blizny zostały.']],
+ ev:[{t:20,k:'say',s:2,m:'Wiemy, że zawiedliśmy. Pozwólcie nam to naprawić.'},{t:40,k:'team',s:2,x:2,w:'P',m:'Wracamy do was. Tym razem do końca.'}]},
+{title:'Zarządca solnych tam',r:[3,6,4],al:4,pairs:[[3,6]],np:2,ec:7,T:150,nn:6,nb:3,sp:.3,raid:{t:50,n:75},
+ intro:[['N','Wyjścia z Morza Soli pilnował zarządca solnych tam — {B}, wspierany przez zarządcę bram — {E}.'],[1,'Trzecia część mapy jest zabezpieczona przepisami. Zabrać ją można tylko po bitwie.'],[4,'A moje tytuły przemawiają za mną!'],[2,'Tym razem stoimy przy was.']],
+ post:[[1,'Weźcie ją. Zapiszemy, że została zdobyta zgodnie z regulaminem.'],['H','Trzeci sprawdzian zaliczony. Masz rajda!'],['N','Trzecia część mapy wskazywała Mesy. Koniec rozdziału III.']],
+ ev:[{t:30,k:'say',s:1,m:'Nasze tamy wytrzymają każdy szturm.'},{t:45,k:'say',s:'H',m:'Nadchodzimy.'},{t:70,k:'gift',s:2,n:14,m:'Wysyłamy wsparcie!'}]},
+{title:'Obóz w skałach',r:[6,4],al:4,np:2,ec:6,T:115,nn:7,nb:2,sp:.5,
+ intro:[['N','Rozdział IV. Mesy to skalne płaskowyże, na których nie ma ani jednej studni. Zarządca bram — {E} umocnił tu obóz, żeby zatrzymać wszystkich poszukiwaczy.'],[4,'Ja, Wielki Zarządca Mes, ogłaszam: obóz jest niezdobyty!'],[2,'Twierdze można zdobyć. Trzeba tylko znać ich słabe punkty.'],['P','Zacznijmy od najsłabszej.']],
+ post:[[4,'Dobrze... Może jednak twierdza bez ludzi to tylko kamienie.'],['N','Wiatr świstał wśród skał, a droga w górę była wolna.']],
+ ev:[{t:30,k:'say',s:4,m:'Nasze mury są nie do zdobycia!'},{t:80,k:'gift',s:2,n:12,m:'Wysyłamy wsparcie!'}]},
+{title:'Mury',r:[2,3,4],al:4,pairs:[[2,3]],np:2,ec:6,T:120,nn:7,nb:5,sp:.2,
+ intro:[['N','W labiryncie Mes wzniesiono mury, by powstrzymać każdą armię. Rywal — {A} i strażnik — {B} wykorzystali to, by was zablokować.'],[0,'Nie znajdziecie drogi. Ten labirynt zna każdy kamień, a my znamy go najlepiej.'],[1,'Ruch w labiryncie wymaga zezwolenia!'],[2,'Nie musimy forsować każdego muru. Wystarczy znaleźć słabe miejsca.']],
+ post:[[2,'Oni budowali mury, a my znaleźliśmy w nich szpary.'],['N','Labirynt Mes został za plecami.']],
+ ev:[{t:25,k:'say',s:0,m:'Murów nie da się obejść!'},{t:50,k:'quake',s:2,m:'Osunięcie skał! Ściany runęły, droga jest wolna!'},{t:90,k:'gift',s:2,n:12,m:'Wysyłamy wsparcie!'}]},
+{title:'Wyścig o stację',r:[2],np:2,ec:6,T:150,nn:8,nb:3,sp:.1,relic:true,rt:1,
+ intro:[['N','Czwarta część mapy znajdowała się w starej stacji sygnałowej na szczycie mesy. Kto zajmie ją pierwszy, ten odczyta zapisy.'],[0,'Stacja będzie nasza. Wieże wokół niej już do nas należą.'],['P','Wygra ten, kto przejmie stację oznaczoną gwiazdą.']],
+ post:[['N','Zapisy ze stacji wskazywały na ruiny starego miasta, ukryte głęboko na pustyni.'],[0,'Byliście szybsi. Honor każe nam to przyznać.']],
+ ev:[{t:40,k:'reinf',s:0,r:0,n:25,rl:1,m:'Nie dostaniecie tej gwiazdy!'},{t:80,k:'reinf',s:0,r:0,n:25,rl:1,m:'Wzywamy posiłki!'}]},
+{title:'Dwa fronty',r:[2,6,7,8,4],al:4,pairs:[[2,6],[7,8]],np:3,ec:8,T:130,nn:8,nb:3,sp:.25,
+ intro:[['N','Z północy nadciągnęły dwie nowe nacje — {F} i {G} — w sojuszu z rywalem — {A} i zarządcą bram — {E}. Dwa fronty zamknęły drogę.'],[5,'Zostaliśmy wezwani. Wykonujemy rozkaz. Nic osobistego.'],[6,'Zapłacono nam z góry. Chyba rozumiecie.'],['P','Nasz lud potrzebuje wody.']],
+ post:[[5,'Walczyliśmy bez wiary w sens. Tym razem to wy mieliście rację.'],['N','Coraz więcej nacji szukało krainy Weretanów, a coraz mniej wierzyło w zwycięstwo siłą.']],
+ ev:[{t:40,k:'say',s:6,m:'Płacą, więc walczymy!'},{t:90,k:'reinf',s:5,r:5,n:12,m:'Przybyły posiłki!'},{t:110,k:'gift',s:2,n:20,m:'Wysyłamy wsparcie!'}]},
+{title:'Mistrz mesy',r:[2,7,4],al:4,pairs:[[2,7]],np:2,ec:7,T:135,nn:6,nb:3,sp:.3,hm:.92,raid:{t:62,n:70},
+ intro:[['N','Na szczycie największej mesy czekał rywal — {A}, który od początku gonił tę samą wyprawę. Teraz stanął do ostatniej bitwy.'],[0,'To nasza ostatnia szansa. Bez czwartej części mapy nasz lud zginie.'],['P','Nasze ludy cierpią tak samo. Możemy znaleźć wyjście bez wojny.'],[0,'Jest już za późno. Honor nie pozwala nam się cofnąć.'],[5,'Idziemy z nimi. Rozkaz to rozkaz.']],
+ post:[[0,'Wygraliście. Weźcie czwartą część. Może wy znajdziecie to, czego my nie umieliśmy.'],['H','Czwarty sprawdzian zaliczony. Masz rajda!'],['N','Czwarta część mapy wskazywała ruiny starego miasta. Koniec rozdziału IV.']],
+ ev:[{t:30,k:'say',s:0,m:'Nie zatrzymacie nas!'},{t:45,k:'say',s:'H',m:'Zbliżamy się...'},{t:80,k:'gift',s:2,n:14,m:'Wysyłamy wsparcie!'}]},
+{title:'Ruiny',r:[3,7,4],al:4,np:2,ec:8,T:155,nn:10,nb:2,sp:.35,
+ intro:[['N','Rozdział V. Ruiny starego miasta ciągnęły się po horyzont. Weretani zbudowali je jako stolicę, zanim ich lud rozproszył się po pustyni.'],[2,'Miasto wygląda na opuszczone, ale zostały tu spichlerze i drogi.'],[1,'Spichlerze podlegają zarządowi Rady! Dostęp wzbroniony.'],[5,'My znamy plan dróg. Nie oddamy go bez walki.']],
+ post:[[2,'Spichlerze są puste, ale ślady prowadzą na południe.'],['N','W ruinach znaleziono plan miasta i kierunek ku ostatniej bramie.']],
+ ev:[{t:30,k:'say',s:1,m:'To nasze ruiny!'},{t:90,k:'gift',s:2,n:12,m:'Wysyłamy wsparcie!'}]},
+{title:'Dwa sojusze',r:[6,3,4],al:4,pairs:[[6,3]],np:2,ec:6,T:125,nn:7,nb:3,sp:.25,
+ intro:[['N','W ruinach zawiązał się sojusz zarządcy bram — {E} i strażnika — {B}.'],[4,'Ja, Pan Ruin, ogłaszam: to miasto jest nasze!'],[1,'Zgodnie z regulaminem wzywamy was do poddania się.'],[2,'Tym razem mamy wsparcie. Trzymajmy się razem.']],
+ post:[[4,'Dosyć. Zbyt wielu ludzi poległo dla jednej mapy.'],['N','Wojna w ruinach dobiegła końca.']],
+ ev:[{t:35,k:'say',s:4,m:'Nie opuścicie tego miasta!'},{t:80,k:'gift',s:2,n:14,m:'Wysyłamy wsparcie!'}]},
+{title:'Szturm',r:[2,6,8,4],al:4,pairs:[[2,6]],np:3,ec:8,T:140,nn:6,nb:2,sp:.2,sv:240,raid:{t:90,n:75},
+ intro:[['N','Wieść o waszej wyprawie rozeszła się po pustyni. Trzy nacje ruszyły, by zniszczyć wasz obóz w ruinach.'],[0,'Nikt nie dotrze do krainy Weretanów przed nami.'],[4,'Zamkniemy was w murach! Taki jest nasz rozkaz!'],[2,'Musimy wytrzymać cztery minuty. Potem nadejdzie odsiecz.'],['P','Trzymamy pozycję. Każdy mur ma znaczenie.']],
+ post:[['N','Po czterech minutach z południa nadeszła odsiecz, a wrogowie się wycofali.'],['P','Tym razem obroniliśmy się wspólnie.']],
+ ev:[{t:60,k:'reinf',s:0,r:0,n:15,m:'Posiłki z północy!'},{t:80,k:'say',s:'H',m:'Ruiny kryją więcej, niż myśleliście.'},{t:120,k:'reinf',s:4,r:4,n:15,m:'Nie ustępujemy!'},{t:180,k:'reinf',s:6,r:6,n:15,m:'Atakujemy ze wschodu!'}]},
+{title:'Odejście sojusznika',r:[2,3,4],al:4,pairs:[[2,3]],np:2,ec:7,T:130,nn:8,nb:2,sp:.2,
+ intro:[['N','Do obozu dotarła wiadomość: ziemie wędrownego sojusznika — {C} są zagrożone.'],[2,'Wracamy do swoich. Dług wobec was spłaciliśmy, ale rodzina jest ważniejsza.'],['P','Rozumiemy. Dziękujemy za wszystko.'],[0,'Zostaliście sami. Teraz nikt was nie obroni.']],
+ post:[['N','Pożegnanie było krótkie. Droga wymagała tylko jednego: iść dalej.'],['P','Do zobaczenia.']],
+ ev:[{t:20,k:'say',s:2,m:'Niedługo musimy ruszać.'},{t:60,k:'leave',s:2,x:2,m:'Nasz lud nas wzywa. Powodzenia!'},{t:90,k:'say',s:0,m:'Sami sobie nie poradzicie.'}]},
+{title:'Brama ruin',r:[6,7],pairs:[[6,7]],np:3,ec:6,T:120,nn:6,nb:3,sp:.3,hm:.62,raid:{t:90,n:65},
+ intro:[['N','Ostatnia brama ruin prowadziła do Doliny Cieni, ostatniego odcinka drogi do krainy Weretanów. Strzegli jej zarządca bram — {E} i przybysz z północy — {F}.'],[4,'Ja, Strażnik Ostatniej Bramy, nie ustąpię!'],[5,'Rozkaz: nikt nie przejdzie.'],['P','Idziemy dalej. Nasz lud nie ma innej drogi.']],
+ post:[[4,'Przejdźcie. Zbyt długo broniliśmy czegoś, czego nie rozumiemy.'],['H','Piąty sprawdzian zaliczony. Masz rajda!'],['N','Pięć części mapy złożyło się w całość. Wskazywała Dolinę Cieni i ukrytą w niej studnię. Koniec rozdziału V.']],
+ ev:[{t:30,k:'say',s:4,m:'Ta brama stoi od wieków!'},{t:45,k:'say',s:'H',m:'Ostatni sprawdzian się zbliża.'}]},
+{title:'Dolina Cieni',r:[2,3,6,7],np:3,ec:10,T:200,nn:7,nb:3,sp:.25,
+ intro:[['N','Rozdział VI. Mapa wskazywała Dolinę Cieni, głęboki wąwóz, w którym zbiegały się szlaki z całej pustyni. Spotkali się tu wszyscy poszukiwacze krainy Weretanów.'],[0,'Dalej nie przejdziecie. Dolina jest wąska i zmieści tylko jednego zwycięzcę.'],[1,'Zgadzamy się. Albo my, albo wy.'],[4,'My nie mamy układów z nikim. Każdy sam za siebie.']],
+ post:[['N','Walka w wąwozie kosztowała wszystkich wiele sił. Nikt nie czuł się zwycięzcą.']],
+ ev:[{t:35,k:'say',s:0,m:'Nikt stąd nie wyjdzie!'},{t:100,k:'say',s:4,m:'Nikomu nie ufamy!'}]},
+{title:'Próba wody',r:[2,3,8],pairs:[[2,3]],np:3,ec:9,T:165,nn:6,nb:2,sp:.2,sv:300,raid:{t:100,n:95},
+ intro:[['N','W środku doliny znajdowała się jedyna studnia, która nie wyschła od lat. Była zasypana, a odkopanie jej miało zająć pięć minut. Przez ten czas trzeba było utrzymać obóz.'],['P','Trzymajmy się. Woda jest blisko.'],[0,'Nie pozwolimy, żeby to wasz lud się napił.'],[1,'Zniszczymy wasz obóz.']],
+ post:[['N','Studnia ożyła. Po latach do naczyń spłynęła pierwsza woda.'],['P','Wystarczy dla wszystkich. Naprawdę dla wszystkich.']],
+ ev:[{t:60,k:'reinf',s:0,r:0,n:15,m:'Posiłki!'},{t:110,k:'say',s:'H',m:'Woda nie jest wasza.'},{t:160,k:'reinf',s:1,r:1,n:15,m:'Nie ustępujemy!'},{t:220,k:'reinf',s:0,r:0,n:15,m:'Atakujemy z flanki!'}]},
+{title:'Zjednoczone armie',r:[2,3,6,7],pairs:[[2,3],[6,7]],np:3,ec:11,T:235,nn:6,nb:3,sp:.25,
+ intro:[['N','Wieść o studni obiegła pustynię. Dwa potężne sojusze — rywal ze strażnikiem oraz zarządca bram z przybyszem z północy — ruszyły przeciwko wam, by nikogo nie dopuścić do wody.'],[0,'Ta studnia będzie nasza!'],[4,'Nie ma tu miejsca dla obcych.'],['P','Jeśli musimy walczyć, to walczmy. Ale pamiętajcie, że wody wystarczy dla wszystkich.']],
+ post:[[0,'Dość... Walczyliśmy o coś, co mogło być wspólne.'],['N','Sojusze rozpadły się pod ciężarem własnych wątpliwości.']],
+ ev:[{t:40,k:'say',s:4,m:'Zniszczymy was!'},{t:100,k:'reinf',s:0,r:0,n:15,m:'Posiłki!'},{t:150,k:'reinf',s:4,r:4,n:15,m:'Wsparcie!'}]},
+{title:'Prawda',r:[2,3,6,7,8],pairs:[[7,8]],np:3,ec:10,T:200,nn:6,nb:2,sp:.2,
+ intro:[['N','W dolinie odnaleziono dawne zapisy. Kraina Weretanów nigdy nie była ziemią do podboju. Powstała dzięki współpracy wielu ludów, które razem zbudowały studnie i drogi.'],['P','Przeczytajcie. Nikt nie musi tu walczyć.'],[0,'Nie wierzymy... Wszystko to na próżno?'],[1,'To zmienia wszystko.']],
+ post:[['N','Rywale złożyli broń. Po raz pierwszy od lat nikt nie patrzył na drugiego jak na wroga.'],['H','Ostatnia próba przed wami.']],
+ ev:[{t:60,k:'team',s:0,x:0,w:'P',m:'Przeczytaliśmy zapisy. Dołączamy do was.'},{t:80,k:'team',s:1,x:1,w:'P',m:'My również. Dość tej wojny.'},{t:100,k:'team',s:4,x:4,w:'P',m:'Nie będziemy już walczyć.'}]},
+{title:'Wrota Weretanów',r:[2,3,4,5,6],allies:[2,3,4,5,6],np:6,ec:10,T:1,nn:0,nb:0,sp:0,sv:240,hz:1,xm:800,hc:8,pair:1,hm:.85,
+ layout:{cells:[[594,98,30,1],[670,109,30,1],[676,190,30,1],[672,489,30,1],[569,593,30,1],[690,593,30,1],[269,132,30,2,24],[141,361,30,3,24],[398,362,30,4,24],[227,521,30,6,24],[451,579,30,2,24],[723,337,22,5,18,1,0],[1043,107,36,12,45,2],[922,248,34,12,42,3],[1122,324,36,12,45,2],[929,411,34,12,42,3],[994,614,36,12,45,2]],bars:[[719,56,719,275],[721,402,745,699]]},
+ intro:[['N','U wrót krainy Weretanów zebrali się wszyscy sojusznicy: rywal — {A}, strażnik — {B}, wędrowny sojusznik — {C}, władca burz — {D} i zarządca bram — {E}.'],['N','Wrót strzegła Horda Somki. Była zbyt silna, by atakować ją wprost, a bariery uniemożliwiały dojście do niej z waszej strony.'],['H','Weretani przyjmują tylko tych, którzy potrafią się zjednoczyć. Pokażcie, że potraficie.'],[3,'Nasza twierdza stoi w bramie. Jest mała, ale mocna, i będzie przyjmować nowe oddziały.'],['P','Utrzymamy bramę. Będziemy wspierać sojuszników, a oni nas.'],['N','Przetrwajcie cztery minuty. Za każdym razem, gdy Horda sprowadzi nowy oddział, do waszej strony dołączy kolejny sojusznik. Możecie wspierać sojuszników, ale nie możecie sami atakować Hordy.']],
+ post:[['H','Przeszliście próbę. Wrota są otwarte.'],['N','Za wrotami rozciągała się zielona dolina, w której biły źródła.']],
+ ev:[{t:10,k:'say',s:'H',m:'Zjednoczeni, ale czy wytrwacie?'},{t:25,k:'say',s:3,m:'Brama się trzyma! Przysyłajcie wsparcie!'},{t:100,k:'say',s:3,m:'Brama słabnie! Potrzebujemy jednostek!'},{t:170,k:'say',s:'H',m:'Brama upadnie. To tylko kwestia czasu.'}]}
+];
+const CEND=[['N','Przed wszystkimi, którzy przybyli razem, otworzyła się kraina Weretanów. W dolinie biły źródła, a na polach rosło zboże.'],['P','Nasz lud przetrwa.']];
+function drawMap(l){
+  const c=document.getElementById('mapc'),w=c.width=innerWidth,h=c.height=innerHeight,g=c.getContext('2d');
+  const S=Math.min(w/1000,(h-80)/600),ox=(w-1000*S)/2,oy=(h-80-600*S)/2+10;
+  g.fillStyle='#0d1219';g.fillRect(0,0,w,h);
+  const names=['Susza','Kanion Szeptów','Morze Soli','Mesy','Ruiny','Weretani'],rom=['I','II','III','IV','V','VI'];
+  const N=900,pts=[],cum=[0];
+  for(let i=0;i<=N;i++){const t=i/N;pts.push([60+t*880,300+Math.sin(t*14)*115+Math.cos(t*5)*30])}
+  for(let i=1;i<=N;i++)cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+  const P=[];for(let k=0;k<30;k++){const d=cum[N]*k/29;let j=1;while(j<N&&cum[j]<d)j++;P.push(pts[j])}
+  const X=p=>ox+p[0]*S,Y=p=>oy+p[1]*S,D=cum[N]/29*S;
+  g.textAlign='center';
+  for(let k=0;k<6;k++){
+    const a=k?(P[k*5-1][0]+P[k*5][0])/2:40,b=k<5?(P[k*5+4][0]+P[k*5+5][0])/2:960;
+    g.fillStyle=k%2?'#ffffff08':'#ffffff12';g.fillRect(ox+a*S,0,(b-a)*S,h);
+    const cx=ox+(a+b)/2*S,cw=(b-a)*S-8,rn='Rozdział '+rom[k];let fs=Math.max(8,13*S);g.fillStyle='#ffffff88';
+    g.font='600 '+fs+'px Nunito,Arial,sans-serif';
+    while(fs>8&&Math.max(g.measureText(rn).width,g.measureText(names[k]).width)>cw){fs--;g.font='600 '+fs+'px Nunito,Arial,sans-serif'}
+    if(Math.max(g.measureText(rn).width,g.measureText(names[k]).width)<=cw){g.fillText(rn,cx,h-14-fs*1.5);g.fillText(names[k],cx,h-14)}else g.fillText(rom[k],cx,h-14);
+  }
+  g.lineCap='round';
+  for(let i=0;i<29;i++){const done=i+1<=l-1;g.beginPath();g.moveTo(X(P[i]),Y(P[i]));g.lineTo(X(P[i+1]),Y(P[i+1]));g.strokeStyle=done?COL[1]:'#ffffff33';g.lineWidth=Math.max(2,D*.1);g.setLineDash(done?[]:[D*.15,D*.2]);g.stroke()}
+  g.setLineDash([]);
+  P.forEach((p,i)=>{const x=X(p),y=Y(p);
+    if(i<l-1){g.fillStyle=COL[1]+'30';g.beginPath();g.arc(x,y,D*.4,0,7);g.fill();g.fillStyle=COL[1];g.beginPath();g.arc(x,y,Math.max(3,D*.15),0,7);g.fill()}
+    else if(i===l-1){g.fillStyle='#ffe14a';g.beginPath();g.arc(x,y,Math.max(4,D*.25),0,7);g.fill();g.strokeStyle='#fff';g.lineWidth=2;g.stroke()}
+    else{g.strokeStyle='#ffffff55';g.lineWidth=2;g.beginPath();g.arc(x,y,Math.max(2,D*.11),0,7);g.stroke()}});
+  g.fillStyle='#fff';g.font='600 '+Math.max(10,14*S)+'px Nunito,Arial,sans-serif';
+  g.textBaseline='middle';g.textAlign='center';g.fillText('Ojczyzna',X(P[0]),Y(P[0])+D*.9);{const fx=X(P[29]),fy=Y(P[29]),fr=Math.max(7,D*.34),lw=g.measureText('Weretani').width;g.fillStyle='#ffe14a';g.strokeStyle='#000';g.lineWidth=2;g.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?fr*.45:fr;g.lineTo(fx+Math.cos(a)*r,fy+Math.sin(a)*r)}g.closePath();g.fill();g.stroke();g.fillStyle='#fff';g.fillText('Weretani',Math.min(fx,w-lw/2-4),fy-fr-10)}
+}
+addEventListener('keydown',e=>{if(state!=='dlg'||e.repeat)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();document.getElementById('dx').blur();document.getElementById('dx').click()}else if(e.key==='Escape'){document.getElementById('ds').click()}});
+function shield(){
+  const rc=cells.find(c=>c.relic);if(!rc)return;
+  cells.filter(c=>c.o===1).forEach(p=>{
+    if(blocked(p,rc))return;
+    for(const f of [.5,.42,.58,.35,.65])for(const len of [240,300,200]){
+      const mx=p.x+(rc.x-p.x)*f,my=p.y+(rc.y-p.y)*f,a=Math.atan2(rc.y-p.y,rc.x-p.x)+Math.PI/2,dx=Math.cos(a)*len/2,dy=Math.sin(a)*len/2;
+      const w={x1:mx-dx,y1:my-dy,x2:mx+dx,y2:my+dy};
+      if([w.x1,w.x2].some(v=>v<12||v>LW-12)||[w.y1,w.y2].some(v=>v<60||v>LH-12))continue;
+      if(cells.some(c=>dSeg(c,w)<c.r+36))continue;
+      bars.push(w);if(connected()&&blocked(p,rc))return;bars.pop();
+    }
+  });
+}
+function spk(k){return k==='P'?1:k==='H'?12:k==='N'?0:2+k}
+function spawnA(rr,n,o){for(let t=0;t<300;t++){const x=60+rr()*600,y=90+rr()*(LH-150),c={x,y,r:30,o,n:Math.min(120,n),t:0,type:0};if(cells.some(q=>Math.hypot(q.x-x,q.y-y)<q.r+66)||bars.some(w=>dSeg(c,w)<66))continue;cells.push(c);if(connected())break;cells.pop()}}
+function spawnH(rr,n,xm,noP){xm=xm||60;for(let pass=0;pass<2;pass++)for(let t=0;t<300;t++){const x=xm+rr()*(LW-60-xm),y=90+rr()*(LH-150),c={x,y,r:36,o:12,n:Math.min(140,n),t:0,type:0},cl=pass?54:72;if(cells.some(q=>Math.hypot(q.x-x,q.y-y)<q.r+cl)||bars.some(w=>dSeg(c,w)<cl)||(noP&&cells.some(q=>q.o===1&&q.x<719&&!blocked(q,c))))continue;cells.push(c);if(connected())return true;cells.pop()}return false}
+function svTimer(){
+  const e=document.getElementById('tmr'),C=campMode?CAMP[level-1]:null;
+  if(!C||!C.sv||(state!=='play'&&state!=='pause')){if(e.textContent)e.textContent='';return}
+  const r=Math.max(0,Math.ceil(C.sv-st.t)),m=Math.floor(r/60)+':'+String(r%60).padStart(2,'0'),nh=Math.max(0,Math.ceil(nextH-st.t)),t='⏱ '+m+'  |  fala za '+nh+' s';
+  if(e.textContent!==t)e.textContent=t;e.classList.toggle('near',r<30);
+}
+function svTxt(){return ''}
+function fmt(t){return t.replace(/\{([PABCDEFG])\}/g,(m,k)=>NAME[k==='P'?1:2+'ABCDEFG'.indexOf(k)])}
+function setNationC(n){
+  const a=[1,2,3,4,5,6,7,8,9,10,11].filter(k=>k!==n),r=mkRng(hs('WERETANI:'+n));
+  for(let i=a.length-1;i>0;i--){const j=r()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}
+  map=[0,n,...a.slice(0,10),12];COL={0:BC[0]};NAME={};for(let o=1;o<=12;o++){COL[o]=BC[map[o]];NAME[o]=BN[map[o]]}
+}
+function placeRaid(rr,rt,n){
+  for(let t=0;t<300;t++){const x=60+rr()*(LW-120),y=90+rr()*(LH-150),c={x,y,r:36,o:12,n,t:0,type:0};
+    if(cells.some(q=>Math.hypot(q.x-x,q.y-y)<q.r+72)||bars.some(w=>dSeg(c,w)<72))continue;
+    cells.push(c);const ok=connected();cells.pop();if(ok){raid={t:rt,c};break}}
+}
+function runEv(e){
+  const o=spk(e.s),alive=o===0||o===1||o===12||cells.some(c=>c.o===o);
+  if(!alive&&e.k!=='quake'&&e.k!=='wave')return;
+  if(e.k==='gift'){const pc=cells.filter(c=>c.o===1).sort((a,b)=>a.n-b.n)[0];if(pc)pc.n+=e.n;snd('c',1)}
+  else if(e.k==='quake'){bars=[];snd('x',1)}
+  else if(e.k==='team'){const x=spk(e.x),w=spk(e.w);if(al[w]===undefined){const u=Object.values(al);al[w]=[0,1,2,3].find(i=>!u.includes(i))}al[x]=al[w];if(e.atk){snd('x',1);const tg=cells.filter(c=>c.o===1);cells.filter(c=>c.o===x).forEach(q=>{const t=tg.slice().sort((a,b)=>Math.hypot(a.x-q.x,a.y-q.y)-Math.hypot(b.x-q.x,b.y-q.y)).find(c=>!blocked(q,c));if(t)send(q,t,.7)})}}
+  else if(e.k==='wave'){spawnH(mkRng(hs('W'+level+':'+Math.round(st.t))),(e.n*DIFF[diff].rd*(diff===2?((CAMP[level-1]||{}).hm||1):1))|0,e.xm)}
+  else if(e.k==='leave'){const x=spk(e.x);delete al[x];cells.forEach(c=>{if(c.o===x){c.o=0;c.n=Math.min(c.n,8)}});units=units.filter(u=>u.o!==x)}
+  else if(e.k==='reinf'){const c=e.rl?cells.find(c=>c.relic):cells.filter(c=>c.o===spk(e.r))[0];if(c)c.n+=e.n}
+  if(alive)say(o,[fmt(e.m)],1,0,true);
+}
+function runDlg(lines,cb,ml){
+  const d=document.getElementById('dlg'),c=document.getElementById('dc'),g=c.getContext('2d');
+  let i=0;state='dlg';d.style.display='flex';drawMap(ml||level);
+  const show=()=>{
+    if(i>=lines.length){d.style.display='none';cb();return}
+    const k=lines[i][0],tx=lines[i][1],o=spk(k);i++;
+    g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,c.width,c.height);g.setTransform(2,0,0,2,0,0);
+    const sv=ctx;ctx=g;sym(map[o],28,30,40,COL[o]);ctx=sv;
+    document.getElementById('dbox').style.borderColor=COL[o];
+    document.getElementById('dn').textContent=NAME[o]||'Kronikarz';document.getElementById('dt').textContent=fmt(tx);
+  };
+  document.getElementById('dx').onclick=show;
+  document.getElementById('ds').onclick=()=>{i=lines.length;show()};
+  show();
+}
+function startCamp(l){const C=CAMP[l-1];if(!C){runDlg(CEND,()=>showEnd(),31);return}runDlg(C.intro,()=>gen())}
+function hideModes(){document.getElementById('pick').style.display='none';document.getElementById('mode').style.display='none'}
+function startStd(){campMode=false;setSeed();setNation(pendN);level=1;att=0;hideModes();gen()}
+function startCampaign(){campMode=true;seed='WERETANI';setNationC(pendN);level=1;att=0;hideModes();startCamp(1)}
+let fwRun=0;
+function showEnd(){
+  seed='';level=1;att=0;saveGame();
+  const fin=document.getElementById('fin'),c=document.getElementById('fc'),g=c.getContext('2d');
+  fin.style.display='flex';state='fin';fwRun=1;c.width=innerWidth;c.height=innerHeight;
+  let ps=[],last=0;
+  const burst=()=>{const x=80+Math.random()*(c.width-160),y=60+Math.random()*c.height*.5,col=BC[1+(Math.random()*11|0)],n=40+(Math.random()*30|0);for(let i=0;i<n;i++){const a=Math.random()*7,v=1.5+Math.random()*3.5;ps.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,c:col})}snd('c',1)};
+  const tick=t=>{if(!fwRun)return;g.fillStyle='rgba(13,18,25,.25)';g.fillRect(0,0,c.width,c.height);
+    if(t-last>450){last=t;burst()}
+    ps=ps.filter(p=>p.l>0);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.vx*=.99;p.l-=.011;g.globalAlpha=Math.max(0,p.l);g.fillStyle=p.c;g.beginPath();g.arc(p.x,p.y,2.2,0,7);g.fill()});g.globalAlpha=1;requestAnimationFrame(tick)};
+  snd('win',1);requestAnimationFrame(tick);
+  document.getElementById('fx').onclick=()=>{fwRun=0;fin.style.display='none';state='menu';document.getElementById('pick').style.display='flex'};
+}
+addEventListener('keydown',e=>{if(state==='fin'&&e.key==='Enter')document.getElementById('fx').click()});
+let cheat=false;
+function updSk(){const b=document.getElementById('sk');if(b)b.style.display=(campMode&&!cheat)?'none':''}
+Object.defineProperty(window,'IWannaCheat',{configurable:true,get(){cheat=true;updSk();return 'Tryb testowy włączony: przycisk Pomiń jest dostępny w kampanii.'}});
+const NAT=[1,2,3,4,5,6,7,8,9,10,11,13];
+function hs(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}return h>>>0}
+function mkRng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+const newSeed=()=>Math.random().toString(36).slice(2,8).toUpperCase();
+function setSeed(){const i=document.getElementById('seed');seed=(i.value.trim()||newSeed()).toUpperCase().slice(0,20);i.value=seed}
+function gen(){
+  rnd=mkRng(hs(seed+':'+level+':'+att));saveGame();updSk();st={t:0,cap:0,lost:0,sent:0,kills:0};
+  {const b=BGS[hs(seed+':'+level+':'+att+':b')%BGS.length];document.body.style.background='radial-gradient(ellipse at center,'+b[0]+','+b[1]+') '+b[1]}
+  cells=[];units=[];state='play';aiIdle=0;aiT=-1.5;stopAll();document.getElementById('pz').style.display='none';
+  const C=campMode?CAMP[level-1]:null,m=60,top=LW<900?100:60,nNeu=C?C.nn:6+Math.min(level,6),F=C?C.r.length:Math.min(1+(rnd()*(1+level/2)|0),5),nEn=C?C.ec:Math.max(F,Math.min(1+Math.ceil((level+1)/2)+(rnd()<.3?1:0),7)),T=(C?C.T*(diff===2?(C.hm||1):1):(20+14*level)*(1+.15*(F-1)))*DIFF[diff].t,ids=C?C.r:shuf([2,3,4,5,6,7,8,9,10,11]).slice(0,F),nP=C?C.np:1+(level>2)+(level>6),far=Math.min(LW,LH)*.45,nE2=C?nEn:Math.max(F,Math.min(nEn,F*(nP+1)));
+  al={};let pool=ids.slice(),fl=0;
+  if(C){if(C.al)al[1]=al[C.al]=fl++;(C.allies||[]).forEach(o=>{if(al[1]===undefined)al[1]=fl++;al[o]=al[1]});(C.pairs||[]).forEach(p=>{al[p[0]]=al[p[1]]=fl++})}else if(F>=3&&rnd()<.5){
+    const a=pool.shift();al[1]=al[a]=fl++;
+    while(pool.length>=2&&(fl===1||rnd()<.4)){const a=pool.shift(),b=pool.shift();al[a]=al[b]=fl++}
+  }
+  {const fp=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]][hs(seed+':'+level+':'+att+':f')%6];Object.keys(al).forEach(k=>{al[k]=fp[al[k]]})}
+  const tm=!C&&al[1]!==undefined?F/(F-1):1;
+  const add=(o,n,r)=>{for(let t=0;t<400;t++){const x=m+rnd()*(LW-2*m),y=top+m/2+rnd()*(LH-top-1.5*m);
+    const okP=o<2||t>250||cells.every(c=>c.o!==1||Math.hypot(c.x-x,c.y-y)>far);
+    if(okP&&cells.every(c=>Math.hypot(c.x-x,c.y-y)>c.r+r+36)){cells.push({x,y,r,o,n,t:0});return}}};
+  for(let i=0;i<nP;i++)add(1,DIFF[diff].ps,34);
+  for(let i=0;i<nE2;i++)add(ids[i%F],(T*tm/nE2*(.85+rnd()*.3))|0,26+Math.min(level,8));
+  for(let i=0;i<nNeu;i++)add(0,6+rnd()*16|0,20+rnd()*16);
+  cells.forEach(c=>{c.type=0;if(c.o!==1&&rnd()<(C?C.sp:.12))c.type=1+(rnd()*3|0)});
+  if(C&&C.relic){const pc=cells.find(c=>c.o===1),rc=cells.filter(c=>c.o>=2&&!ally(c.o,1)).sort((a,b)=>Math.hypot(b.x-pc.x,b.y-pc.y)-Math.hypot(a.x-pc.x,a.y-pc.y))[0];if(rc){rc.type=C.rt||2;rc.relic=1;if(C.rt===1)rc.n=(rc.n*2.5)|0}}
+  bars=[];
+  const nB=C?C.nb:rnd()*(2+Math.min(level,6)/2)|0;
+  for(let t=0;t<80&&bars.length<nB;t++){
+    const len=Math.min(LW,LH)*(.25+rnd()*.3),a=rnd()*Math.PI,cx=m+rnd()*(LW-2*m),cy=top+rnd()*(LH-top-m);
+    const w={x1:cx-Math.cos(a)*len/2,y1:cy-Math.sin(a)*len/2,x2:cx+Math.cos(a)*len/2,y2:cy+Math.sin(a)*len/2};
+    if([w.x1,w.x2].some(v=>v<12||v>LW-12)||[w.y1,w.y2].some(v=>v<top||v>LH-12))continue;
+    if(cells.some(c=>dSeg(c,w)<c.r+36))continue;
+    bars.push(w);if(!connected())bars.pop();
+  }
+  if(C&&C.layout){const dn=DIFF[diff],hh=diff===2?(C.hm||1):1;cells=C.layout.cells.map(q=>({x:q[0],y:q[1],r:q[2],o:q[3],n:q[3]===1?dn.ps:q[3]===12?Math.round(q[4]*dn.rd*hh):q[4],t:0,type:q[5]||0,gate:q[6]||0}));bars=C.layout.bars.map(b=>({x1:b[0],y1:b[1],x2:b[2],y2:b[3]}))}
+  if(C&&C.relic)shield();
+  raid=null;
+  {const rr=mkRng(hs(seed+':'+level+':'+att+':raid'));
+   if(!C&&rr()<.25){const rt=40+rr()*110,rad=36,n=Math.min(140,((90+8*level)*DIFF[diff].rd)|0);
+    for(let t=0;t<300;t++){const x=m+rr()*(LW-2*m),y=top+m/2+rr()*(LH-top-1.5*m),c={x,y,r:rad,o:12,n,t:0,type:0};
+     if(cells.some(q=>Math.hypot(q.x-x,q.y-y)<q.r+rad+36)||bars.some(w=>dSeg(c,w)<rad+36))continue;
+     cells.push(c);const ok=connected();cells.pop();if(ok){raid={t:rt,c};const q=Math.round(rt);console.log('👀 '+String(Math.floor(q/60)).padStart(2,'0')+':'+String(q%60).padStart(2,'0'));break}}}}
+  spawnCd=0;nextH=C&&C.sv?Math.max(20,C.sv*.1):0;hz=!!(C&&C.hz);evs=C&&C.ev?C.ev.map(e=>({...e})):[];if(C&&C.h)C.h.forEach((n,i)=>spawnH(mkRng(hs('H'+level+i)),(n*DIFF[diff].rd)|0));if(C&&C.raid)placeRaid(mkRng(hs('CR'+level)),C.raid.t,Math.min(140,(C.raid.n*DIFF[diff].rd*(diff===2?(C.hm||1):1))|0));
+  document.getElementById('lv').textContent=C?('Kampania '+level+'/30: '+C.title+' ('+DIFF[diff].n.toLowerCase()+')'):'Poziom '+level+(att?', próba '+(att+1):'')+' ('+DIFF[diff].n.toLowerCase()+'), wrogowie: '+ids.filter(o=>!ally(o,1)).map(o=>NAME[o]).join(', ')+(al[1]!==undefined?'; sojusznik: '+NAME[ids.find(o=>ally(o,1))]:'')+(fl?'. Flagi oznaczają sojusze':'');
+}
+const SAY={atk:['Już po tobie!','Nie masz szans!','Czas się poddać!','Nadchodzimy!','Strzeż się!','Idzie na ciebie burza!','Twój koniec jest bliski!','Szykuj się na porażkę!','Nikt cię nie uratuje!'],cap:['Haha!','Teraz to moje!','Łatwizna!','Dziękuję za prezent!','Jeden mniej!','To było za proste!','Witaj w moim imperium!','Mam cię!'],def:['Zostaw mnie w spokoju!','Pożałujesz!','Jak śmiesz?!','Nie z nami te numery!','Tego nie zapomnę!','Wynoś się!','Odczep się!','Zapłacisz za to!']};
+SAY.help=['Wysyłam ci wsparcie!','Trzymaj się, pomoc nadchodzi!','Sojusznicy w drodze!','Nie zostawię cię samego!'];SAY.thx=['Dzięki za pomoc!','Sojusznik tego nie zapomni!','Wielkie dzięki, przyjacielu!','Twoje wsparcie się liczy!'];
+let lastMsg=0,toastT=0,lastTxt='',taunts=true,deselect=true;
+function say(o,list,p,cd,force){
+  if(!taunts&&!force)return;const now=performance.now();if(!force&&(Math.random()>p||now-lastMsg<(cd||7000)))return;lastMsg=now;
+  const c=document.getElementById('tc'),g=c.getContext('2d');
+  g.setTransform(2,0,0,2,0,0);g.clearRect(0,0,48,48);const sv=ctx;ctx=g;sym(map[o],24,26,26,COL[o]);ctx=sv;
+  const t=document.getElementById('toast');t.style.borderColor=COL[o];
+  let tx;do{tx=list[Math.random()*list.length|0]}while(tx===lastTxt&&list.length>1);lastTxt=tx;document.getElementById('tn').textContent=NAME[o]||'Kronikarz';document.getElementById('tt').textContent=tx;
+  t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);
+}
+function send(a,b,p){
+  if(blocked(a,b))return;
+  if(a.o>=2)aiIdle=0;
+  const k=Math.floor(a.n*(p||.5));if(k<1)return;a.n-=k;if(a.o===1)st.sent+=k;snd(a.o===1?'l':'l2',a.o===1?1:.4);if(a.o===12&&b.o===1)say(12,['Masz rajda!'],.9,3000);else if(a.o>=2&&b.o===1)say(a.o,ally(a.o,1)?SAY.help:SAY.atk,ally(a.o,1)?.6:.25);else if(a.o===1&&b.o>=2)say(b.o,ally(b.o,1)?SAY.thx:SAY.def,ally(b.o,1)?.4:.25);
+  for(let i=0;i<k;i++)units.push({a,b,o:a.o,sp:a.o===12?2:(a.type===3?2:1),p:-i*9/ Math.hypot(a.x-b.x,a.y-b.y)});
+}
+function cellAt(x,y){return cells.find(c=>Math.hypot(c.x-x,c.y-y)<=c.r+Math.max(6,14/sc))}
+function pos(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left-ox)/sc,y:(e.clientY-r.top-oy)/sc}}
+let hov=null;
+function hover(){const c=cellAt(ptr.x,ptr.y);if(c===hov)return;hov=c;if(c&&c.o===1){const i=drag.indexOf(c);if(i<0)drag.push(c);else if(deselect)drag.splice(i,1)}}
+cv.addEventListener('pointerdown',e=>{if(state!=='play')return;ptr=pos(e);drag=[];hov=null;hover()});
+cv.addEventListener('pointermove',e=>{ptr=pos(e);if(drag)hover()});
+addEventListener('pointerup',()=>{if(!drag)return;const t=cellAt(ptr.x,ptr.y);
+  if(t)drag.forEach(s=>{if(s!==t)send(s,t,pct)});if(t)pct=.5;drag=null});
+function ai(){
+  cells.filter(c=>c.o>=2&&c.n>10).forEach(s=>{
+    if(Math.random()>.45)return;
+    if(al[s.o]!==undefined&&Math.random()<.2&&cells.filter(c=>c.o===s.o).length>=2){
+      const h=cells.filter(t=>t.o!==s.o&&ally(t.o,s.o)&&t.n<s.n*.8&&!blocked(s,t)&&Math.hypot(t.x-s.x,t.y-s.y)<Math.min(LW,LH)*.6&&units.some(u=>u.b===t&&!ally(u.o,t.o))).sort((x,y)=>x.n-y.n)[0];
+      if(h&&s.n>14){send(s,h);return}
+    }
+    let best=null,bs=1e9;
+    cells.forEach(t=>{if(ally(t.o,s.o)||blocked(s,t))return;const sc=Math.hypot(t.x-s.x,t.y-s.y)*(hz&&s.o===12?.25:1)+t.n*(t.type===1?8:4);if(sc<bs){bs=sc;best=t}});
+    const full=s.n>=s.r*1.62,bold=aiIdle>DIFF[diff].id;
+    if(best&&(s.n*.5>best.n*(best.type===1?2:1)*(hz&&s.o===12?.6:DIFF[diff].th)+3||(full&&s.n*.5>best.n*.4)||(bold&&s.n*.5>best.n*.35)))send(s,best);
+  });
+}
+function end(win){
+  state='end';snd(win?'win':'lose',1);
+  if(win){const l0=level,a0=att;level++;att=0;saveGame();level=l0;att=a0}
+  {const t=Math.round(st.t);document.getElementById('ms').textContent='Czas: '+Math.floor(t/60)+':'+String(t%60).padStart(2,'0')+'\nPrzejęte kulki: '+st.cap+'\nUtracone kulki: '+st.lost+'\nWysłane jednostki: '+st.sent+'\nPokonane jednostki: '+Math.round(st.kills)}const m=document.getElementById('msg');m.style.display='flex';
+  mt.textContent=win?(al[1]!==undefined?'Sojusz wygrywa!':'Wygrywa: '+NAME[1]):'Porażka: '+NAME[1];
+  mp.textContent=win?'Wszystkie wrogie węzły przejęte. Następny poziom będzie cięższy.':'Wrogowie przejęli wszystkie twoje węzły.';
+  mb.textContent=win?'Następny poziom':'Spróbuj ponownie';
+  mb.onclick=()=>{m.style.display='none';if(campMode){if(win){const C=CAMP[level-1];runDlg(C?C.post:[],()=>{level++;att=0;startCamp(level)},level+1)}else gen();return}if(win){level++;att=0}else att++;gen()};
+}
+rs.onclick=()=>{msg.style.display='none';if(!campMode)att++;gen()};
+function step(dt){
+  st.t+=dt;
+  evs.forEach(e=>{if(!e.d&&st.t>=e.t){e.d=1;runEv(e)}});
+  if(campMode){const C=CAMP[level-1];if(C&&C.sv&&st.t<C.sv){
+    const tm=cells.filter(c=>pt(c.o)),hc=cells.filter(c=>c.o===12).length,sh=tm.length/Math.max(1,cells.length),cap=C.hc||3;shareNow=Math.round(sh*100);
+    const noEn=!cells.some(c=>c.o>0&&!pt(c.o))&&!units.some(u=>u.o>0&&!pt(u.o));
+    if((st.t>=nextH||(noEn&&st.t>nextH-12))&&hc<cap){
+      const un=tm.reduce((a,c)=>a+c.n,0),hh=diff===2?(C.hm||1):1,n=Math.min(140,Math.max(35,un*(.25+.45*sh)))*DIFF[diff].rd*hh;
+      if(spawnH(mkRng(hs('S'+level+':'+Math.round(st.t))),n|0,C.xm,C.hz)){
+        if(C.pair&&tm.length<14){const ao=C.allies[Math.round(st.t)%C.allies.length];spawnA(mkRng(hs('A'+level+':'+Math.round(st.t))),(n*.9)|0,ao);say(ao,['Horda sprowadza nowy oddział, ale i my dostajemy posiłki!'],1,0,true)}else say(12,['Nowa fala Hordy!'],1,0,true);
+        nextH=st.t+Math.max(14,(42-30*sh)*[1.3,1,.85][diff]);
+      }else nextH=st.t+3;
+    }else if(hc>=cap&&st.t>=nextH)nextH=st.t+8;
+  }}
+  if(campMode){const C2=CAMP[level-1];if(C2&&C2.layout){const gg=cells.find(c=>c.gate);if(gg&&!pt(gg.o)){say(12,['Brama padła!'],1,0,true);end(false);return}}}
+  if(raid&&st.t>=raid.t){cells.push(raid.c);raid=null;snd('x',1);say(12,['Rajd! Horda Somki nadciąga!'],1,0,true)}
+  cells.forEach(c=>{
+    if(c.o){c.t+=dt;const cap=c.r*1.8;
+      if(c.n<cap){if(c.t>(1.6-c.r/40)/(c.type===2?2:1)){c.t=0;c.n++}}else if(c.t>1.2){c.t=0;c.n--}}
+  });
+  for(let i=units.length-1;i>=0;i--){
+    const u=units[i],d=Math.hypot(u.b.x-u.a.x,u.b.y-u.a.y);
+    u.p+=90*(u.sp||1)*dt/d;
+    if(u.p>=1){
+      const b=u.b;snd('a',u.o===1?1:.6);
+      if(ally(b.o,u.o))b.n++;
+      else{if(u.o===1)st.kills+=b.type===1?.5:1;b.n-=b.type===1?.5:1;if(b.n<0){const was=b.o;if(u.o===1)st.cap++;if(was===1)st.lost++;b.o=u.o;b.n=1;b.t=0;if(u.o===1)snd('c',1);else if(was===1)snd('x',1);if(was===1&&u.o>=2)say(u.o,SAY.cap,.7)}}
+      units.splice(i,1);
+    }
+  }
+  aiT+=dt;aiIdle+=dt;if(aiT>Math.max(.9,1.8-level*.1)+DIFF[diff].ai){aiT=0;ai()}
+  if((campMode&&(CAMP[level-1]||{}).sv&&st.t>=CAMP[level-1].sv)||(campMode&&(CAMP[level-1]||{}).relic&&cells.some(c=>c.relic&&pt(c.o)))||(!cells.some(c=>c.o>0&&!pt(c.o))&&!units.some(u=>u.o>0&&!pt(u.o))&&!evs.some(e=>!e.d&&e.k==='wave')&&!(campMode&&(CAMP[level-1]||{}).sv&&st.t<CAMP[level-1].sv)))end(true);
+  else if(!cells.some(c=>pt(c.o))&&!units.some(u=>pt(u.o)))end(false);
+}
+function draw(){
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);ctx.setTransform(dpr*sc,0,0,dpr*sc,dpr*ox,dpr*oy);
+  bars.forEach(w=>{ctx.lineCap='round';ctx.strokeStyle='#000a';ctx.lineWidth=9;ctx.beginPath();ctx.moveTo(w.x1,w.y1);ctx.lineTo(w.x2,w.y2);ctx.stroke();ctx.strokeStyle='#4b5667';ctx.lineWidth=5;ctx.stroke();ctx.strokeStyle='#7d8ba0';ctx.lineWidth=1.5;ctx.stroke()});
+  if(drag){
+    const t=cellAt(ptr.x,ptr.y);
+    ctx.strokeStyle=COL[1];ctx.lineWidth=2;ctx.setLineDash([6,6]);
+    drag.forEach(s=>{const bl=t&&t!==s&&blocked(s,t),ex=t&&t!==s?t.x:ptr.x,ey=t&&t!==s?t.y:ptr.y;ctx.strokeStyle=bl?'#ffffff88':COL[1];ctx.setLineDash(bl?[2,7]:[6,6]);ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(ex,ey);ctx.stroke();if(bl){const mx=(s.x+ex)/2,my=(s.y+ey)/2;ctx.setLineDash([]);[['#000c',7],['#fff',3]].forEach(q=>{ctx.strokeStyle=q[0];ctx.lineWidth=q[1];ctx.beginPath();ctx.moveTo(mx-8,my-8);ctx.lineTo(mx+8,my+8);ctx.moveTo(mx+8,my-8);ctx.lineTo(mx-8,my+8);ctx.stroke()});ctx.lineWidth=2}});
+    ctx.setLineDash([]);
+  }
+  cells.forEach(c=>{
+    const col=COL[c.o],sel=drag&&drag.includes(c);
+    const g=ctx.createRadialGradient(c.x,c.y,c.r*.2,c.x,c.y,c.r*1.6);
+    g.addColorStop(0,col+'55');g.addColorStop(1,col+'00');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(c.x,c.y,c.r*1.6,0,7);ctx.fill();
+    ctx.fillStyle=col+'33';ctx.strokeStyle=col;ctx.lineWidth=sel?4:2;
+    ctx.beginPath();ctx.arc(c.x,c.y,c.r,0,7);ctx.fill();ctx.stroke();
+    deco(c);sym(map[c.o],c.x,c.y,c.r,col);if(c.relic||c.gate){ctx.fillStyle='#ffe14a';ctx.strokeStyle='#000';ctx.lineWidth=3;ctx.font='bold 26px Nunito,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.strokeText('★',c.x+c.r+4,c.y-c.r-2);ctx.fillText('★',c.x+c.r+4,c.y-c.r-2)}
+    ctx.fillStyle='#fff';ctx.font='bold '+Math.max(13,c.r*.5)+'px Nunito,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(Math.floor(c.n),c.x,c.y-c.r-(c.type?22:12));
+    if(al[c.o]!==undefined)flag(c.x+ctx.measureText(String(Math.floor(c.n))).width/2+8,c.y-c.r-(c.type?22:12),al[c.o]);
+  });
+  units.forEach(u=>{
+    if(u.p<0)return;
+    const x=u.a.x+(u.b.x-u.a.x)*u.p,y=u.a.y+(u.b.y-u.a.y)*u.p;
+    ctx.fillStyle=COL[u.o];ctx.beginPath();ctx.arc(x,y,3.5,0,7);ctx.fill();
+  });
+}
+let music=true,mG=null,mM=null,dG=null,nz=null,mT=0,mI=0,mTr=0,mSeg=0,mFirst=true,mTimer=null;
+const CH=[[110,220,261.63,329.63,392],[87.31,174.61,220,261.63,329.63],[130.81,261.63,329.63,392,493.88],[98,196,246.94,293.66,440]];
+const PN=[440,523.25,587.33,659.25,783.99,880];
+function musicInit(){
+  if(mG)return;
+  mG=AC.createGain();mM=AC.createGain();dG=AC.createGain();mM.gain.value=.9;mM.connect(AC.destination);dG.connect(mM);
+  const d=AC.createDelay(2),fb=AC.createGain(),lp=AC.createBiquadFilter();
+  d.delayTime.value=.55;fb.gain.value=.4;lp.type='lowpass';lp.frequency.value=1800;
+  mG.connect(mM);mG.connect(d);d.connect(lp);lp.connect(fb);fb.connect(d);lp.connect(mM);
+}
+function pad(f,t,d,v,type,out){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+2.6);g.gain.linearRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(out);o.start(t);o.stop(t+d+.1)}
+function bell(f,t,v){[[1,1],[2.01,.25]].forEach(p=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f*p[0];g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v*p[1],t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+2.6);o.connect(g);g.connect(mG);o.start(t);o.stop(t+2.7)})}
+function chord(t,k){
+  const c=CH[k%4],lf=AC.createBiquadFilter();lf.type='lowpass';lf.frequency.value=900;lf.connect(mG);
+  c.forEach((f,i)=>pad(f,t,9,i?.007:.014,i?'triangle':'sine',lf));
+  const n=3+(Math.random()*3|0);
+  for(let i=0;i<n;i++)bell(PN[Math.random()*PN.length|0],t+1+Math.random()*6.5,.022);
+}
+const BR=[[130.81,[261.63,329.63,392,523.25]],[98,[246.94,293.66,392,493.88]],[110,[261.63,329.63,440,523.25]],[87.31,[261.63,349.23,440,523.25]]];
+const AP=[[0,1,2,3,2,1,2,3],[0,2,1,3,0,2,1,3],[3,2,1,0,1,2,3,2]];
+function pl(f,t,d,v,type){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(dG);o.start(t);o.stop(t+d+.02)}
+function kick(t){const o=AC.createOscillator(),g=AC.createGain();o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.0001,t+.16);o.connect(g);g.connect(dG);o.start(t);o.stop(t+.18)}
+function nzb(t,d,v,fq,type){
+  if(!nz){nz=AC.createBuffer(1,AC.sampleRate,AC.sampleRate);const a=nz.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1}
+  const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=nz;f.type=type;f.frequency.value=fq;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(f);f.connect(g);g.connect(dG);s.start(t);s.stop(t+d+.02);
+}
+function bar(t,k){
+  const r=BR[k%4][0],ar=BR[k%4][1],pat=AP[(k>>2)%3],b=.25;
+  for(let i=0;i<8;i++){
+    const ti=t+i*b;
+    pl(ar[pat[i]]*(k%4===3&&i>3?2:1),ti,.22,.012,'square');
+    if(i%2===0)pl(i%4===2?r*1.5:r,ti,.3,.035,'triangle');
+    if(i===0||i===4)kick(ti);
+    if(i%2===1)nzb(ti,.04,.008,7000,'highpass');
+    if(i===2||i===6)nzb(ti,.12,.015,1800,'bandpass');
+  }
+}
+const MEL=[[392,493.88,587.33,493.88,392,493.88,587.33,783.99],[659.25,523.25,659.25,783.99,659.25,523.25,659.25,0],[587.33,493.88,392,493.88,587.33,493.88,392,0],[440,587.33,739.99,587.33,440,587.33,739.99,0],[493.88,587.33,783.99,587.33,493.88,587.33,783.99,659.25],[659.25,783.99,1046.5,783.99,659.25,783.99,659.25,523.25],[587.33,739.99,880,739.99,587.33,739.99,880,739.99],[783.99,587.33,493.88,587.33,783.99,0,392,0]];
+const RT=[98,130.81,98,146.83,98,130.81,146.83,98];
+const ST=[[196,246.94,293.66],[261.63,329.63,392],[196,246.94,293.66],[293.66,369.99,440],[196,246.94,293.66],[261.63,329.63,392],[293.66,369.99,440],[196,246.94,293.66]];
+function bar2(t,k){
+  const j=k%8,b=.22,ml=MEL[j];
+  for(let i=0;i<8;i++){
+    const ti=t+i*b;
+    if(ml[i]){pl(ml[i],ti,.2,.028,'triangle');pl(ml[i]*2,ti,.1,.006,'square')}
+    if(i%4===0)pl(RT[j],ti,.28,.045,'triangle');
+    if(i%4===2)ST[j].forEach(f=>pl(f,ti,.14,.012,'square'));
+    if(i%2===1)nzb(ti,.03,.007,8000,'highpass');
+  }
+}
+function musicTick(){
+  if(!AC||!music||!mG)return;
+  while(mT<AC.currentTime+3){
+    if(mSeg<=0){mTr=mFirst?0:(Math.random()<.85?(mTr+1+(Math.random()*2|0))%3:mTr);mFirst=false;mSeg=mTr?24:6;mI=0}
+    if(mTr===2)bar2(mT,mI);else if(mTr)bar(mT,mI);else chord(mT,mI);
+    mT+=[8,2,1.76][mTr];mI++;mSeg--;
+  }
+}
+function startMusic(){if(!AC||!music||mTimer)return;musicInit();mT=AC.currentTime+.3;mI=0;mSeg=0;mFirst=true;mM.gain.setTargetAtTime(.9,AC.currentTime,.5);musicTick();mTimer=setInterval(musicTick,500)}
+function stopMusic(){if(mTimer){clearInterval(mTimer);mTimer=null}if(mM)mM.gain.setTargetAtTime(0,AC.currentTime,.4)}
+function stopAll(){act.forEach(o=>{try{o.stop()}catch(e){}});act=[]}
+function tone(f0,f1,d,v,type,delay){
+  const t=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();
+  act.push(o);o.onended=()=>{act=act.filter(x=>x!==o)};o.type=type||'sine';o.frequency.setValueAtTime(f0,t);if(f1!==f0)o.frequency.exponentialRampToValueAtTime(f1,t+d);
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d+.04);
+  o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.05);
+}
+function snd(k,v){
+  if(!AC||!sound)return;v=v||1;const now=performance.now(),gap=now-(lastS[k]||0);
+  if(k==='a'){lastS.a=now;if(gap>400)tone(440,320,.08,.03*v,'sine');return}
+  if(gap<({l:40,l2:250,c:120,x:120}[k]||0))return;lastS[k]=now;
+  if(k==='l'||k==='l2')tone(380,760,.12,.06*v,'sine');
+  else if(k==='c'){tone(523,523,.09,.07*v,'triangle');tone(784,988,.14,.07*v,'triangle',.09)}
+  else if(k==='x'){tone(330,200,.2,.07*v,'triangle');tone(220,120,.25,.07*v,'triangle',.14)}
+  else if(k==='win')[[523,.12],[659,.12],[784,.12],[1047,.55]].forEach((n,i)=>{tone(n[0],n[0],n[1],.03,'square',i*.13);tone(n[0],n[0],n[1],.07,'triangle',i*.13)});
+  else if(k==='lose')[[392,370,.25],[370,349,.25],[349,330,.25],[330,247,.6]].forEach((n,i)=>tone(n[0],n[1],n[2],.05,'sawtooth',i*.26));
+}
+const unlock=()=>{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()};
+addEventListener('pointerdown',unlock);addEventListener('keydown',unlock);
+cv.addEventListener('wheel',e=>{e.preventDefault();const n=performance.now();if(state!=='play'||n-lastW<60)return;lastW=n;pct=Math.max(.1,Math.min(.9,Math.round((pct+(e.deltaY<0?.1:-.1))*100)/100))},{passive:false});
+function hud2(){
+  if(state==='menu')return;
+  ctx.textBaseline='bottom';ctx.textAlign='left';ctx.font='600 14px Nunito,Arial,sans-serif';ctx.fillStyle='#efe4c8bb';
+  ctx.fillText(svTxt()+(campMode?'':'Seed: '+seed+'   ')+'Wysyłasz: '+Math.round(pct*100)+'%',12,H-12);
+  if(drag&&drag.length){ctx.font='600 18px Nunito,Arial,sans-serif';ctx.fillStyle='#fff';ctx.fillText(Math.round(pct*100)+'%',ptr.x*sc+ox+16,ptr.y*sc+oy-12)}
+}
+function loop(t){
+  if((fc++&15)===0)layout();const dt=Math.min((t-last)/1000||0,.05);last=t;
+  if(state==='play')step(dt);draw();ctx.setTransform(dpr,0,0,dpr,0,0);hud2();svTimer();requestAnimationFrame(loop)}
+addEventListener('keydown',e=>{
+  if(e.repeat||!(e.key==='p'||e.key==='P'||e.key==='Pause'))return;
+  const pz=document.getElementById('pz');
+  if(state==='play'){state='pause';drag=null;pz.style.display='flex'}
+  else if(state==='pause'){state='play';pz.style.display='none'}
+  if(mM&&music)mM.gain.setTargetAtTime(state==='pause'?.35:.9,AC.currentTime,.3);
+});
+function buildPick(){
+  document.getElementById('hud').addEventListener('click',e=>{const b=e.target.closest('button');if(b)b.blur()});
+  const tg=document.getElementById('tg');tg.onclick=()=>{taunts=!taunts;saveGame();tg.classList.toggle('on',taunts);tg.textContent='Komunikaty: '+(taunts?'wł.':'wył.')};
+  const ts=document.getElementById('ts');ts.onclick=()=>{sound=!sound;saveGame();ts.classList.toggle('on',sound);ts.textContent='Dźwięk: '+(sound?'wł.':'wył.')};
+  const tm=document.getElementById('tm');tm.onclick=()=>{music=!music;saveGame();tm.classList.toggle('on',music);tm.textContent='Muzyka: '+(music?'wł.':'wył.');unlock();if(music)startMusic();else stopMusic()};
+  const td=document.getElementById('td');td.onclick=()=>{deselect=!deselect;saveGame();td.classList.toggle('on',deselect);td.textContent='Odznaczanie: '+(deselect?'wł.':'wył.')};
+  document.getElementById('seed').value=newSeed();document.getElementById('sr').onclick=()=>{document.getElementById('seed').value=newSeed()};
+  const cl=document.getElementById('cl');let clT=0;
+  cl.onclick=()=>{
+    if(!clT){cl.textContent='Na pewno? Kliknij ponownie';clT=setTimeout(()=>{clT=0;cl.textContent='Wyczyść zapis'},3000);return}
+    clearTimeout(clT);clT=0;try{localStorage.removeItem(SAVEKEY)}catch(e){}
+    music=sound=taunts=deselect=true;diff=1;seed='';level=1;att=0;syncUI();
+    [...document.getElementById('diff').children].forEach((x,j)=>x.classList.toggle('on',j===1));
+    document.getElementById('seed').value=newSeed();cl.textContent='Zapis wyczyszczony';setTimeout(()=>{cl.textContent='Wyczyść zapis'},2000);
+  };
+  document.getElementById('m1').onclick=()=>{document.getElementById('sd').style.display='flex';document.getElementById('seed').focus()};document.getElementById('m3').onclick=startStd;document.getElementById('seed').addEventListener('keydown',e=>{if(e.key==='Enter')startStd()});document.getElementById('m2').onclick=startCampaign;document.getElementById('m0').onclick=()=>{document.getElementById('mode').style.display='none'};
+  const dv=document.getElementById('diff');
+  DIFF.forEach((d,i)=>{const b=document.createElement('button');b.className='dbtn'+(i===diff?' on':'');b.textContent=d.n;b.onclick=()=>{diff=i;saveGame();[...dv.children].forEach((x,j)=>x.classList.toggle('on',j===i))};dv.append(b)});
+  const box=document.getElementById('nats');
+  NAT.forEach(n=>{
+    const b=document.createElement('button');b.className='nat';b.style.borderColor=BC[n];
+    const c=document.createElement('canvas'),d=devicePixelRatio||1;c.width=c.height=72*d;c.style.width=c.style.height='58px';
+    const g=c.getContext('2d');g.scale(d,d);const sv=ctx;ctx=g;sym(n,36,38,38,BC[n]);ctx=sv;
+    const t=document.createElement('span');t.textContent=BN[n];
+    b.append(c,t);
+    b.onclick=()=>{unlock();startMusic();pendN=n;document.getElementById('mp2').textContent=BN[n];document.getElementById('sd').style.display='none';document.getElementById('mode').style.display='flex'};
+    box.append(b);
+  });
+  document.getElementById('sk').onclick=()=>{if(state==='menu'||(campMode&&!cheat))return;document.getElementById('msg').style.display='none';level++;att=0;campMode?startCamp(level):gen()};
+  document.getElementById('ch').onclick=()=>{document.getElementById('msg').style.display='none';document.getElementById('pick').style.display='flex';state='menu'};
+}
+resize();layout();cells=[];units=[];state='menu';
+const saved=loadSave();
+if(saved&&saved.cfg){const c=saved.cfg;music=c.music!==false;sound=c.sound!==false;taunts=c.taunts!==false;deselect=c.deselect!==false;if([0,1,2].includes(c.diff))diff=c.diff}
+buildPick();syncUI();
+if(saved&&saved.game&&saved.seed&&BN[saved.nation]&&saved.level>=1){
+  const ct=document.getElementById('cont');ct.style.display='flex';
+  document.getElementById('cp').textContent=(saved.camp?'Kampania: ':'')+BN[saved.nation]+', poziom '+saved.level+(saved.att?', próba '+(saved.att+1):'')+', seed '+saved.seed;
+  document.getElementById('cy').onclick=()=>{unlock();startMusic();seed=saved.seed;document.getElementById('seed').value=seed;if(saved.camp){campMode=true;seed='WERETANI';setNationC(saved.nation)}else{campMode=false;setNation(saved.nation)}level=saved.level;att=saved.att||0;ct.style.display='none';document.getElementById('pick').style.display='none';if(saved.camp)startCamp(level);else gen()};
+  document.getElementById('cn').onclick=()=>{ct.style.display='none'};
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
