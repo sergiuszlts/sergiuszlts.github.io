@@ -615,12 +615,12 @@ function spawnSomka(){
   lastHit:0,aggro:null,aggroUntil:0,windup:0,walk:0};
  showFeed('Somka pojawił się w dżungli!',0);
  showNotice('SOMKA — BOSS W DŻUNGLI',2.6);
- ring(x,y,145,'#c8ff92',1.35);burst(x,y,'#d7a5f2',32,135);
+ ring(x,y,145,'#ffca82',1.35);burst(x,y,'#ffc477',32,135);
 }
 function defeatSomka(boss,killer){
  const team=killer&&[0,1].includes(killer.team)?killer.team:null;
  somka=null;somkaNextSpawn=clock+SOMKA_RESPAWN;
- burst(boss.x,boss.y,'#d89df1',70,220);ring(boss.x,boss.y,160,'#dbffc3',1.4);
+ burst(boss.x,boss.y,'#ffc17b',70,220);ring(boss.x,boss.y,160,'#ffdb94',1.4);
  if(team===null){showFeed('Somka został pokonany!',0);return}
  somkaBuffUntil[team]=clock+SOMKA_BUFF_DURATION;
  for(const h of heroes){if(h.team!==team)continue;addGold(h,125);grantXP(h,90)}
@@ -763,7 +763,6 @@ function updateBot(h,dt){
  h.aiThink-=dt;
  const mybase=structures.find(s=>s.team===h.team&&s.kind==='core');
  const hpRatio=h.hp/h.maxhp;
- const low=hpRatio<.28;
  let nearest=combatTarget(h,520),enemyHero=closestEnemyHero(h,clock<(h.chaseUntil||0)?600:470),goal=null;
  // Krótka blokada celu: dwóch podobnie bliskich wrogów nie powoduje ciągłego zawracania.
  const held=h.targetLock;
@@ -784,15 +783,29 @@ function updateBot(h,dt){
  const alliesClose=nearHeroes(h.team,h.x,h.y,320).filter(e=>e!==h);
  const enemiesClose=nearHeroes(1-h.team,h.x,h.y,340).filter(e=>canTeamSee(h.team,e));
  const pressure=enemiesClose.length-alliesClose.length-(hpRatio>.72?1:0);const skillFactor=h.team===1?DIFFICULTY[difficulty].skill:1;
- const retreatDanger=low||(hpRatio<.5&&pressure>0)||(enemyTower&&dist(h,enemyTower)<enemyTower.range*.82&&!alliedNearTarget(enemyTower)&&hpRatio<.84);
- // Decyzja o odwrocie ma histerezę: po rozpoczęciu odwrotu bot regeneruje zdrowie
- // zanim wróci do walki. Nie waha się między atakiem a ucieczką co klatkę.
- if(!h.retreating&&retreatDanger&&(clock>=(h.retreatCooldown||0)||hpRatio<.2)){
-  h.retreating=true;h.retreatUntil=clock+2.25;h.targetLock=null;h.nav=null;h.ambush=null;
+ // Prawdziwy powrót do bazy wyłącznie przy poważnych ranach. Obecność wrogiej
+ // wieży NIE może już zawrócić bota mającego 50-80% HP.
+ const towerThreat=!!(enemyTower&&dist(h,enemyTower)<enemyTower.range*.82&&!alliedNearTarget(enemyTower));
+ const healingZone=zones.some(z=>z.life>.4&&z.team===h.team&&
+   (z.type==='rain'||z.type==='garden')&&distXY(h.x,h.y,z.x,z.y)<z.r-10);
+ const isUnderPressure=pressure>0||towerThreat;
+ const retreatDanger=hpRatio<.18||
+   (!healingZone&&hpRatio<.24)||
+   (!healingZone&&hpRatio<.31&&isUnderPressure);
+ if(!h.retreating&&retreatDanger&&(clock>=(h.retreatCooldown||0)||hpRatio<.18)){
+  h.retreating=true;h.retreatUntil=clock+.9;
+  h.targetLock=null;h.nav=null;h.ambush=null;
  }
- if(h.retreating&&clock>=(h.retreatUntil||0)&&hpRatio>.85&&
-   (dist(h,basePoint(h.team))<325||!retreatDanger&&pressure<=0)){
-  h.retreating=false;h.retreatCooldown=clock+2.7;h.targetLock=null;h.nav=null;
+ if(h.retreating){
+  // Leczenie/buff może przerwać powrót także PO DRODZE, bez dobiegania do bazy.
+  // Stare wymaganie >85% HP powodowało bezsensowne wielokilometrowe odwroty.
+  const recovered=hpRatio>=.50;
+  const safeEnough=hpRatio>=.35&&!isUnderPressure;
+  const regeneratingSafely=hpRatio>=.29&&healingZone&&!isUnderPressure;
+  if(recovered||(clock>=(h.retreatUntil||0)&&(safeEnough||regeneratingSafely))){
+   h.retreating=false;h.retreatCooldown=clock+2.5;
+   h.targetLock=null;h.nav=null;h.walkDX=undefined;h.walkDY=undefined;
+  }
  }
  const shouldRetreat=!!h.retreating;
  // Zapamiętaj OSTATNIĄ widzianą pozycję. AI nie dostaje wiedzy o ukrytym celu.
@@ -825,7 +838,8 @@ function updateBot(h,dt){
  }
  else if(nearest){goal={x:nearest.x,y:nearest.y};h.focus=nearest}
  else if(escort){const b=basePoint(h.team),d=distXY(escort.x,escort.y,b.x,b.y)||1;goal={x:escort.x+(b.x-escort.x)/d*95,y:escort.y+(b.y-escort.y)/d*95+(h.slot%2?18:-18)};h.focus=null}
- else if(myTower&&hpRatio<.7){goal={x:myTower.x+(h.team?-68:68),y:myTower.y};h.focus=null}
+ // Bez eskorty nie zawracaj do wieży już po utracie 30% HP.
+ else if(myTower&&hpRatio<.35){goal={x:myTower.x+(h.team?-68:68),y:myTower.y};h.focus=null}
  else{const route=getPath(h.team,h.lane);let pivot=route[Math.floor(route.length*.38)];goal={x:pivot[0],y:pivot[1]};h.focus=null}
  if(h.ambush){
   if(shouldRetreat||clock>h.ambush.until||enemyHero&&dist(h,enemyHero)<h.range+65)h.ambush=null;
@@ -941,56 +955,29 @@ function ground(){if(!terrainCanvas)prepareGround();ctx.drawImage(terrainCanvas,
 function drawSomka(b){
  const c=ctx,x=b.x,y=b.y,t=clock;
  c.save();c.translate(x,y);
- c.fillStyle='#18281b88';c.beginPath();c.ellipse(12,18,92,35,0,0,TAU);c.fill();
- c.translate(0,Math.sin(t*2.05)*2.7);
- // Troll-slime: zielonkawa, rozlewająca się sylwetka trolla z galaretowatą masą.
- const wob1=Math.sin(t*2.35)*2.2,wob2=Math.cos(t*2.1)*1.8;
- c.beginPath();
- c.moveTo(-60,-18);
- c.quadraticCurveTo(-76,-74,-43,-100+wob1);
- c.quadraticCurveTo(-30,-113,-16,-118+wob2*.25);
- c.quadraticCurveTo(-10,-130,0,-127);
- c.quadraticCurveTo(8,-133,18,-121+wob2*.3);
- c.quadraticCurveTo(34,-116,46,-98+wob1);
- c.quadraticCurveTo(76,-70,68,-18);
- c.quadraticCurveTo(76,12,51,28);
- c.quadraticCurveTo(37,38,25,52);
- c.quadraticCurveTo(10,60,-2,47);
- c.quadraticCurveTo(-14,61,-29,49);
- c.quadraticCurveTo(-44,36,-55,24);
- c.quadraticCurveTo(-75,7,-60,-18);
- c.closePath();
- const body=c.createRadialGradient(-18,-80,8,3,-20,118);
- body.addColorStop(0,'#e8ffbb');body.addColorStop(.32,'#98de7a');body.addColorStop(.60,'#63b86f');body.addColorStop(.83,'#b254c9');body.addColorStop(1,'#6c2f95');
- c.fillStyle=body;c.fill();
- c.strokeStyle='#355f3c';c.lineWidth=6.2;c.stroke();
- // Wewnętrzna galaretowata masa
- c.globalAlpha=.46;
- c.beginPath();c.ellipse(-14,-66,39,26,-.18,0,TAU);c.fillStyle='#e8ffc8';c.fill();
- c.globalAlpha=.24;
- c.beginPath();c.ellipse(20,-24,34,19,.18,0,TAU);c.fillStyle='#f4b0ea';c.fill();
- c.globalAlpha=1;
- // Trollowa brew / czoło i nos, ale miękko rozlane
- c.strokeStyle='#4a743f';c.lineWidth=9;c.lineCap='round';c.beginPath();c.moveTo(-39,-93);c.lineTo(-8,-89);c.moveTo(9,-89);c.lineTo(38,-93);c.stroke();c.lineCap='butt';
- c.fillStyle='#6eb774';c.beginPath();c.ellipse(0,-63,20,11,0,0,TAU);c.fill();
- // Oczy
- disk(c,-21,-82,13.5,'#fffdf6');disk(c,21,-82,13.5,'#fffdf6');disk(c,-18,-80,5.3,'#1e1f1d');disk(c,23,-80,5.3,'#1e1f1d');
- disk(c,-23,-85,1.9,'#ffffff');disk(c,19,-85,1.9,'#ffffff');
- // Pysk / usta
- c.fillStyle='#5c3048';c.beginPath();c.ellipse(1,-39,25,13,0,0,TAU);c.fill();
- c.fillStyle='#ff9fd4';c.beginPath();c.ellipse(1,-35,15,7.5,0,0,TAU);c.fill();
- // Małe kły trolla
- poly(c,[[-17,-43],[-12,-28],[-7,-42]],'#f3efcf','#7f7a60',1.5);
- poly(c,[[17,-43],[12,-28],[7,-42]],'#f3efcf','#7f7a60',1.5);
- // Slime bubbles and drips
- for(const s of [[-48,-4,8],[-28,22,6],[39,7,7],[52,-19,5]]){disk(c,s[0],s[1],s[2],s[0]>0?'#bb63d8':'#79cc72')}
- c.strokeStyle='#d7ffc17a';c.lineWidth=3;c.beginPath();c.moveTo(-12,-108);c.quadraticCurveTo(-8,-118,-2,-112);c.moveTo(11,-110);c.quadraticCurveTo(17,-120,24,-109);c.stroke();
+ c.fillStyle='#091b18a8';c.beginPath();c.ellipse(12,16,92,35,0,0,TAU);c.fill();
+ c.translate(0,Math.sin(t*2.2)*2.2);
+ // Massive troll with slate green skin, mossy mane, two tusks and heavy stone fists.
+ c.fillStyle='#3f5944';c.strokeStyle='#1c352d';c.lineWidth=7;
+ c.beginPath();c.ellipse(0,-52,68,68,0,0,TAU);c.fill();c.stroke();
+ c.fillStyle='#668267';c.beginPath();c.ellipse(-10,-72,48,45,-.2,0,TAU);c.fill();
+ for(let i=0;i<7;i++){let a=i*TAU/7;disk(c,Math.cos(a)*49,Math.sin(a)*42-87,12,i%2?'#356345':'#49784b')}
+ c.fillStyle='#384d40';c.beginPath();c.ellipse(-65,-30,24,27,.4,0,TAU);c.fill();c.beginPath();c.ellipse(66,-28,24,27,-.4,0,TAU);c.fill();
+ c.fillStyle='#8f9d7b';disk(c,-58,-18,19,'#89977b');disk(c,58,-18,19,'#89977b');
+ // Eyes and strong brow
+ c.strokeStyle='#254332';c.lineWidth=10;c.lineCap='round';c.beginPath();c.moveTo(-40,-99);c.lineTo(-6,-94);c.moveTo(10,-94);c.lineTo(42,-99);c.stroke();
+ disk(c,-24,-89,13,'#dce7bb');disk(c,25,-89,13,'#dce7bb');disk(c,-21,-87,5,'#182d24');disk(c,23,-87,5,'#182d24');
+ c.fillStyle='#35483e';c.beginPath();c.ellipse(0,-63,27,17,0,0,TAU);c.fill();
+ c.fillStyle='#9aad8a';c.beginPath();c.ellipse(0,-69,21,8,0,0,TAU);c.fill();
+ c.fillStyle='#24342e';c.beginPath();c.ellipse(1,-46,32,13,0,0,TAU);c.fill();
+ poly(c,[[-29,-53],[-18,-32],[-10,-54]],'#ece3bc','#746e55',2);
+ poly(c,[[29,-53],[18,-32],[10,-54]],'#ece3bc','#746e55',2);
  c.restore();
  const width=176,ratio=Math.max(0,b.hp/b.maxhp);
- c.fillStyle='#182017f2';c.fillRect(x-width/2-4,y-164,width+8,14);
- c.fillStyle='#4d5a36';c.fillRect(x-width/2,y-160,width,6);
- c.fillStyle='#d28ce8';c.fillRect(x-width/2,y-160,width*ratio,6);
- c.fillStyle='#f3ffe9';c.font='bold 17px Cactu,Arial';c.textAlign='center';c.fillText('SOMKA',x,y-174);
+ c.fillStyle='#0d211bf2';c.fillRect(x-width/2-4,y-164,width+8,14);
+ c.fillStyle='#5b3a28';c.fillRect(x-width/2,y-160,width,6);
+ c.fillStyle='#f2ad65';c.fillRect(x-width/2,y-160,width*ratio,6);
+ c.fillStyle='#fff2c6';c.font='bold 17px Cactu,Arial';c.textAlign='center';c.fillText('SOMKA',x,y-174);
 }
 function drawObjective(s){const c=ctx,team=TEAMS[s.team];if(s.dead){if(s.kind==='inhib'){c.save();c.translate(s.x,s.y);c.globalAlpha=.22;disk(c,0,0,53,team);hex(c,0,0,37,'#1d2934',team,clock*.3);c.restore()}else{disk(c,s.x,s.y,35,'#26333c');hex(c,s.x,s.y,28,'#17212b','#576674',PI/6)}return}
  c.save();c.translate(s.x,s.y);let t=clock; // Fake extrusion and cast shadow
