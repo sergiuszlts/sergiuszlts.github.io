@@ -24,6 +24,7 @@
 @media(max-width:950px){.draftGrid{grid-template-columns:1fr}.cards{grid-template-columns:repeat(3,1fr)}#bottomHud{max-width:none;width:410px;bottom:10px}#bottomHud #avatarCanvas{display:none}#playerStats{display:none}#tip{display:none}#objectives{width:176px}#minimapPanel{width:167px;bottom:92px}#minimap{width:143px;height:76px}#scorebar{top:7px;min-width:320px;padding:7px 10px;gap:3px}#scorebar .score{width:65px}#scorebar .middle{min-width:80px}}
 @media(max-width:560px){#draft{padding:12px} .pane{padding:12px}.cards{grid-template-columns:repeat(2,1fr)}.heroCard .portrait{height:88px}.intro{margin-bottom:15px}#objectives{display:none}#controls{top:10px;right:8px}#scorebar{left:7px;transform:none;min-width:unset;max-width:220px}#scorebar .score{width:40px;font-size:23px}#clock{font-size:18px}#scorebar .slabel{font-size:8px}#status{font-size:8px}#bottomHud{width:calc(100vw - 12px);padding:7px;gap:5px;bottom:3px}.skill{width:42px;height:45px}.skill .sico{line-height:39px;font-size:18px}#heroName{font-size:14px}#minimapPanel{display:none}#feed{top:80px}}
 
+/* ZIELONE POGRANICZE — czytelne ramki, pastelowe akcenty, bez neonowego interfejsu */
 :root{--bg:#10291f;--glass:#122820e8;--edge:#547b68;--cyan:#a5f3d3;--blue:#78bff7;--red:#fc817e;--lime:#b6eb91;--muted:#b2cfba;--white:#f3ffec;--gold:#ffe9a5}
 #vignette{background:radial-gradient(ellipse at 50% 48%,transparent 50%,#09231959 100%)}
 .hudpanel{background:linear-gradient(145deg,#1d3a2ce9,#11271eed);border:1px solid #93ba8b6e;box-shadow:0 9px 23px #081b13a0,inset 0 1px #ffffff20}
@@ -63,6 +64,7 @@
 @media(max-width:810px){#playerStats{display:none}#minimapPanel{bottom:188px;width:172px}#minimap{width:148px;height:79px}#bottomHud{max-width:none;width:min(645px,calc(100vw - 20px))}#objectives{width:190px;top:10px}#scorebar{top:7px;min-width:260px}#scorebar .score{width:55px}}
 @media(max-width:560px){.cards{grid-template-columns:repeat(2,1fr)}.pane{padding:11px}#draft{padding:11px}#objectives,#minimapPanel{display:none}#scorebar{left:8px;transform:none;min-width:210px;max-width:230px}.skill{width:70px;height:70px}.skill .skillName{font-size:9px}#bottomHud{width:calc(100vw - 9px);padding:7px;gap:4px}#skills{gap:4px}#heroName{font-size:15px}#heroHud{min-width:0}#feed{top:80px}}
 
+/* Ustawienia areny */
 .configLabel{font:700 11px Cactu,Arial;letter-spacing:1.6px;color:#c9efdc;margin:8px 0}
 .matchOptions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 15px}.matchOptions.difficulty{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.matchOptions.maps{grid-template-columns:repeat(3,minmax(0,1fr))}
 .matchOptions button{padding:10px 6px;border-radius:11px;border:1px solid #4e675b;background:linear-gradient(180deg,#1c392e,#0d251d);color:#d9f2e8;cursor:pointer;font-family:inherit;transition:.15s;min-width:0}
@@ -75,6 +77,7 @@
 @media(max-width:1050px){.matchOptions button b{font-size:14px}.matchOptions button small{font-size:8px}}
 @media(max-width:560px){.matchOptions.difficulty{gap:4px}.matchOptions button{padding:7px 3px}.matchOptions button b{font-size:12px}.matchOptions button small{font-size:7px}.matchOptions.difficulty button{padding:7px 2px;min-height:56px}.matchOptions.difficulty button b{font-size:10px}.matchOptions.difficulty button small{font-size:7px}}
 
+/* Menu meczu jak ekran gry: stała wysokość, bez przewijania całej strony. */
 #draft{overflow:hidden;overscroll-behavior:none;align-items:center;justify-content:center;padding:14px}
 #draft .draftWrap{display:flex;flex-direction:column;width:min(1380px,100%);height:min(910px,calc(100dvh - 28px));min-height:0;margin:0;overflow:hidden}
 #draft .draftGrid{flex:1;min-height:0;overflow:hidden;grid-template-columns:minmax(0,1.78fr) minmax(295px,1fr);gap:16px}
@@ -111,6 +114,7 @@
 }
 #somkaStatus{margin-top:11px;padding:9px 10px;border:1px solid #8aa46d88;background:#18352af0;border-radius:9px;font-size:10.5px;line-height:1.5;color:#e3edbe}
 #somkaStatus strong{color:#fff1ad;display:block;font-size:11px;letter-spacing:.5px}
+/* Warsztat technologii */
 #creditsPanel{position:absolute;right:16px;bottom:186px;z-index:5;display:flex;gap:10px;align-items:center;background:#142b23ef;border:1px solid #96d3a45a;border-radius:12px;padding:10px 12px;color:#f4e4aa;font:800 14px Cactu,Arial;box-shadow:0 8px 22px #0007}
 #creditsPanel.squareMapPos{bottom:288px}
 #shopBtn{background:linear-gradient(125deg,#c6dc9b,#81bda8);color:#18342b;border:0;border-radius:7px;padding:8px 11px;font:800 12px Cactu,Arial;cursor:pointer}
@@ -142,6 +146,7 @@
 #stealthBadge.revealed{border-color:#ffa77e;color:#ffc8a1;background:#3d231de8}
 @media(max-width:560px){#stealthBadge{bottom:78px;font-size:10px;padding:6px 11px}}
 
+/* Warsztat i minimapa we wspólnym kontenerze: brak nakładania, również na kwadratowej arenie. */
 #tacticalStack{position:absolute;right:16px;bottom:15px;z-index:5;display:flex;flex-direction:column;align-items:flex-end;gap:9px;max-width:calc(100vw - 20px)}
 #tacticalStack #minimapPanel{position:relative;right:auto;bottom:auto;display:block;flex:none}
 #tacticalStack #creditsPanel,#tacticalStack #creditsPanel.squareMapPos{position:relative;right:auto;bottom:auto;display:flex;align-items:center;justify-content:space-between;gap:9px;margin:0;min-height:45px;max-width:100%;box-sizing:border-box}
@@ -165,7 +170,7 @@
  <div id="bottomHud" class="hudpanel"><canvas id="avatarCanvas" width="62" height="62"></canvas><div id="heroHud"><div><span id="heroName">Evolveye</span> <span id="level">LV. 1</span></div><div class="statBars"><div class="bar"><span id="hpFill"></span></div><span id="hpVal">100 / 100</span><div class="bar xp"><span id="xpFill"></span></div></div><div id="skills"><button class="skill ready" id="sk0" title="Q"><span class="key">Q</span><span class="sico">✦</span><span class="skillName">Wiązka</span><span class="cd">0</span></button><button class="skill ready" id="sk1" title="E"><span class="key">E</span><span class="sico">⬡</span><span class="skillName">Unik</span><span class="cd">0</span></button><button class="skill ready" id="sk2" title="R"><span class="key">R</span><span class="sico ult">⚡</span><span class="skillName">Supermoc</span><span class="cd">0</span></button></div></div></div>
  <div id="tacticalStack"><div id="creditsPanel"><span id="goldHud">◉ 300</span><button id="shopBtn" title="Sklep technologii — B">SKLEP [B]</button></div><div id="minimapPanel" class="hudpanel"><div id="minimapHead">MAPA TAKTYCZNA <small>KLIKNIJ, BY PRZESUNĄĆ</small></div><canvas id="minimap" width="436" height="232"></canvas></div></div>
 </div>
-<div id="shopOverlay" role="dialog" aria-modal="true" aria-label="Sklep supermocowych ulepszeń"><div id="shopWindow"><div class="shopHeader"><div><h2>WARSZTAT SUPERMOCY</h2><p>Technologia</p></div><button id="shopClose">ZAMKNIJ ✕</button></div><div id="shopWallet">◉ 300 kredytów</div><div id="shopGrid"></div><div id="shopInventory">EKWIPUNEK: pusto</div><div id="shopInfo">Zakupy dostępne w bazie lub podczas odrodzenia. 4 miejsca na ulepszenia.</div></div></div>
+<div id="shopOverlay" role="dialog" aria-modal="true" aria-label="Sklep supermocowych ulepszeń"><div id="shopWindow"><div class="shopHeader"><div><h2>WARSZTAT SUPERMOCY</h2><p>Dobierz ulepszenia do swojego stylu gry.</p></div><button id="shopClose">ZAMKNIJ ✕</button></div><div id="shopWallet">◉ 300 kredytów</div><div id="shopGrid"></div><div id="shopInventory">EKWIPUNEK: pusto</div><div id="shopInfo">Zakupy dostępne w bazie lub podczas odrodzenia. 4 miejsca na ulepszenia.</div></div></div>
 <div id="draft"><div class="draftWrap"><div class="eyebrow">WYBIERZ SWOJĄ LEGENDĘ</div><div class="brand">CACTU<em>LEGENDS</em></div><div style="font-family:Cactu;font-size:22px;letter-spacing:6px;color:#8cc1d2;font-weight:600">ARENA SUPERMOCY</div><p class="intro">Dwie drużyny, dwanaścioro bohaterów, trzy areny i warsztat ulepszeń supermocy. Wybierz supermoce, ustaw tryb 3v3 lub 5v5, ruszaj przez aleje i zdobądź rdzeń wrogiej bazy.</p><div class="draftGrid">
   <div class="pane"><div class="paneHead">WYBIERZ BOHATERA <span class="tag">12 BOHATERÓW</span></div><div class="cards" id="cards"></div></div>
   <div class="pane"><div class="paneHead">USTAWIENIA MECZU <span class="tag" id="modeTag">3 NA 3</span></div>
@@ -200,6 +205,7 @@ const CH=[
 ];
 
 let teamSize=3,difficulty='easy',currentMap='forest',fogEnabled=false;
+// Narastająca trudność przeciwników; statystyki własnych bohaterów bez zmian.
 const ALLY_BOT={hp:1,damage:1,rate:1,move:1,skill:1,think:1};
 const DIFFICULTY={
  training:{hp:.72,damage:.68,rate:1.32,move:.88,skill:.18,think:2.05,objectiveHp:.74,objectiveDmg:.68,minionHp:.80,minionDmg:.78,allyMinionHp:1.18,allyMinionDmg:1.17},
@@ -247,6 +253,7 @@ document.querySelectorAll('#difficultyOptions button').forEach(b=>b.onclick=()=>
 document.querySelectorAll('#fogOptions button').forEach(b=>b.onclick=()=>{fogEnabled=b.dataset.fog==='on';updateMatchMenu()});
 $('randomBtn').onclick=shuffleDraft;
 function resize(){screen.w=innerWidth;screen.h=innerHeight;screen.dpr=Math.min(devicePixelRatio||1,2);stage.width=Math.round(screen.w*screen.dpr);stage.height=Math.round(screen.h*screen.dpr);stage.style.width=screen.w+'px';stage.style.height=screen.h+'px';ctx.setTransform(screen.dpr,0,0,screen.dpr,0,0)}window.addEventListener('resize',resize);resize();
+// Ekwipunek supermocowy: technologia, trening i inżynieria.
 const ITEMS=[
  {id:'servo',icon:'⚙',name:'Serwomechanizm',price:180,desc:'+15% szybkości ataku',stat:'rate',value:.85},
  {id:'boots',icon:'➤',name:'Buty impulsowe',price:170,desc:'+20 szybkości poruszania',stat:'move',value:20},
@@ -296,6 +303,7 @@ function makeHero(i,team,slot){const data=CH[i],idx=slot%teamSize;
  let hp=Math.round(data.hp*botMods.hp);
  let h={id:++uid,type:'hero',hero:i,team,slot,lane,x:spawnPoint(team).x+off*.6,y:spawnPoint(team).y+off*.4,r:23,hp,maxhp:hp,shield:0,shieldEnd:0,level:1,xp:0,needXp:130,damage:data.damage*botMods.damage,range:data.range,move:data.speed*botMods.move,rate:data.rate*botMods.rate,attackCd:rand(.1,.7),cool:[0,0,0],speedBuff:0,buffEnd:0,slowUntil:0,slowFactor:1,atkBuff:0,invul:0,respawn:0,dead:false,focus:null,ai:slot!==0,dir:team?PI:0,walk:rand(0,TAU),gold:team===1?({training:95,easy:230,medium:320,hard:430}[difficulty]):320,items:[],armor:0,power:0,extraRegen:0,goldTick:0,kills:0,deaths:0,assists:0,dmg:0,helpers:{},lastHit:0,regen:0,attackFlash:0,castAnim:0,aiThink:0,streak:0};return h}
 function makeStructure(team,kind,lane,x,y,order=0){const stats=kind==='core'?[1880,41,325,1.35,310]:kind==='inhib'?[620,0,0,1,0]:[690,42,345,1.08,300];const mod=team===1?DIFFICULTY[difficulty]:ALLY_BOT;const hp=Math.round(stats[0]*(mod.objectiveHp??1));return {id:++uid,type:'structure',kind,team,lane,order,x,y,r:kind==='core'?66:kind==='inhib'?39:35,hp,maxhp:hp,damage:stats[1]*(mod.objectiveDmg??1),range:stats[2],rate:stats[3],radius:stats[4],attackCd:rand(0,.5),dead:false,revive:0,shield:0,aggro:null,aggroUntil:0,assists:{}}}
+// Prawdziwa geometria terenu: przeszkody, woda, mosty i siatka A*.
 const TERRAIN={
  forest:{walls:[],rocks:[[1050,965,86],[1420,1180,72],[2190,860,74],[2660,1170,94],[870,1115,62],[2900,875,67]]},
  valley:{walls:[],rocks:[[920,700,66],[1320,725,70],[2230,1280,70],[2620,1290,75],[960,1300,66],[2610,700,70]]},
@@ -305,6 +313,7 @@ const TERRAIN={
   [[2280,2650],[2510,2700],[2450,2890],[2250,2810]],
   [[2670,2150],[2860,2250],[2810,2410],[2630,2320]],
   [[1040,2150],[1190,2200],[1150,2360],[990,2300]],
+  // Ściana przy północno-wschodnim odcinku środkowej alei: przycięta do widocznego fragmentu, bez ukrytej kolizji pod drogą.
   [[2416,1314],[2565,1165],[2580,1170],[2550,1340]]
  ],rocks:[[1040,1720,64],[1560,1290,63],[1960,2540,67],[2670,1770,67],[790,2530,62],[2990,840,57],[1870,830,59],[1260,2890,62]]}
 };
@@ -342,10 +351,13 @@ function solidTerrain(x,y,r=19,projectile=false){
 function terrainRay(x1,y1,x2,y2,r=18,projectile=false){
  const d=distXY(x1,y1,x2,y2);if(d<.001)return {hit:solidTerrain(x2,y2,r,projectile),x:x1,y:y1,fraction:0};
  let good={x:x1,y:y1,fraction:0};
+ // Dokładne próbkowanie pierwszych metrów zapobiega przeskakiwaniu wąskich rogów mostów.
  for(let tDist=1;tDist<Math.min(d,17);tDist+=1.5){const t=tDist/d,x=x1+(x2-x1)*t,y=y1+(y2-y1)*t;if(solidTerrain(x,y,r,projectile))return {hit:true,...good};good={x,y,fraction:t}}
  const n=Math.max(1,Math.ceil(d/10));for(let i=1;i<=n;i++){let t=i/n;if(t<good.fraction)continue;let x=x1+(x2-x1)*t,y=y1+(y2-y1)*t;if(solidTerrain(x,y,r,projectile))return {hit:true,...good};good={x,y,fraction:t}}
  return {hit:false,...good};
 }
+// Płynna kolizja: oblicz normalną najbliższej przeszkody, aby przesuwać
+// wektor ruchu po jej stycznej zamiast zatrzymywać postać przy krawędzi.
 function terrainContact(x,y,r){
  let hit=null,best=-Infinity;
  const offer=(nx,ny,depth,kind)=>{if(depth>best){const d=Math.hypot(nx,ny)||1;best=depth;hit={x:nx/d,y:ny/d,kind}}};
@@ -371,6 +383,7 @@ function terrainContact(x,y,r){
    const nearest=riftBridges.reduce((best,b)=>!best||Math.abs(v.y-b.localY)<Math.abs(v.y-best.localY)?b:best,null);
    const edgeDepth=margin-Math.abs(v.x),bridgeOverflow=nearest?Math.abs(v.y-nearest.localY)-(116-r):Infinity;
    if(bridgeOverflow>=0&&bridgeOverflow<edgeDepth&&nearest){
+    // Róg mostu: ślizgaj się wzdłuż wejścia, zamiast klinować o brzeg rzeki.
     const sign=v.y>nearest.localY?1:-1;
     offer(Math.sin(angle)*sign,-Math.cos(angle)*sign,Math.max(.01,bridgeOverflow),'water');
    }else offer(Math.cos(angle)*side,Math.sin(angle)*side,Math.max(.01,edgeDepth),'water');
@@ -389,15 +402,19 @@ function putUnit(u,x,y){
  const dx=x-ox,dy=y-oy;
  if(tryMove(dx,dy))return true;
  let n=null;
+ // Liczy się normalna PIERWSZEGO kontaktu, nie innej ściany po drugiej stronie wąskiego narożnika.
  for(const t of [.16,.34,.52,.72,1]){const px=ox+dx*t,py=oy+dy*t;if(solidTerrain(px,py,r)){n=terrainContact(px,py,r);break}}
  if(!n)n=terrainContact(x,y,r)||terrainContact(ox,oy,r);
  if(n){
+  // Usuń tylko składową skierowaną w ścianę; zachowaj prędkość wzdłuż niej.
   const inward=Math.min(0,dx*n.x+dy*n.y),sx=dx-inward*n.x,sy=dy-inward*n.y;
   if(Math.hypot(sx,sy)>.08){
    if(tryMove(sx,sy))return true;
+   // Minimalny odstęp od styku pomaga łagodnie opływać ostre naroża.
    if(tryMove(sx+n.x*.8,sy+n.y*.8))return true;
    if(tryMove(sx*.6+n.x*.8,sy*.6+n.y*.8))return true;
   }
+  // Naturalny wybór strony przy bezpośrednim nacieraniu na okrągłą przeszkodę.
   if(n.kind==='round'){
    const cross=n.x*dy-n.y*dx;
    if(Math.abs(cross)>.25)u.slideSide=Math.sign(cross);
@@ -406,11 +423,14 @@ function putUnit(u,x,y){
    if(tryMove(n.y*side*length,-n.x*side*length))return true;
   }
  }
+ // Ostatni krok ratunkowy przy narożnikach: wybierz oś z większym postępem.
  if(Math.abs(dx)>=Math.abs(dy)){if(tryMove(dx,0))return true;if(tryMove(0,dy))return true}
  else{if(tryMove(0,dy))return true;if(tryMove(dx,0))return true}
  return false;
 }
 function moveUnit(u,dx,dy){const len=Math.hypot(dx,dy),n=Math.max(1,Math.ceil(len/10));let moved=false;for(let i=0;i<n;i++){if(putUnit(u,u.x+dx/n,u.y+dy/n))moved=true}return moved}
+// Łagodne rozdzielanie jednostek: ruch względem innych bohaterów/minionów.
+// Nie zastępuje kolizji terenu; obie warstwy współpracują.
 function crowdDirection(u,dx,dy){
  const d=Math.hypot(dx,dy)||1,vx=dx/d,vy=dy/d;
  let ax=0,ay=0;
@@ -423,7 +443,7 @@ function crowdDirection(u,dx,dy){
   const ahead=rx*vx+ry*vy;
   if(ahead< -8||ahead>limit)continue;
   const side=vx*ry-vy*rx;
-  const preferred=Math.abs(side)<5?(u.id<other.id?-1:1):(side>0?-1:1);
+  const preferred=Math.abs(side)<15?(u.id<other.id?-1:1):(side>0?-1:1);
   const power=(1-Math.sqrt(d2)/limit)*.95;
   ax+=-vy*preferred*power;ay+=vx*preferred*power;
  }
@@ -431,6 +451,7 @@ function crowdDirection(u,dx,dy){
  return {x:(vx+ax)/norm,y:(vy+ay)/norm};
 }
 function resolveCrowding(){
+ // Siatka przestrzenna: nie porównujemy wszystkich minionów ze wszystkimi.
  const active=[...heroes,...minions].filter(living),cell=80,buckets=new Map();
  for(const u of active){const ix=Math.floor(u.x/cell),iy=Math.floor(u.y/cell),key=ix+','+iy;let group=buckets.get(key);if(!group)buckets.set(key,group=[]);group.push(u)}
  for(const a of active){
@@ -444,6 +465,7 @@ function resolveCrowding(){
     if(d>=minDist||terrainRay(a.x,a.y,b.x,b.y,2,true).hit)continue;
     if(d<.05){const theta=(a.id*23+b.id*17)*2.399963;dx=Math.cos(theta);dy=Math.sin(theta);d=1}
     const correction=Math.min(4.8,(minDist-d)*.33),nx=dx/d,ny=dy/d;
+    // Bohater sterowany ręcznie ustępuje nieco mniej niż boty/miniony.
     const shareA=a===player?.38:.5,shareB=b===player?.38:.5;
     putUnit(a,a.x+nx*correction*2*shareA,a.y+ny*correction*2*shareA);
     putUnit(b,b.x-nx*correction*2*shareB,b.y-ny*correction*2*shareB);
@@ -496,6 +518,7 @@ function setPause(v){if(mode!=='game')return;if(v)$('shopOverlay').classList.rem
 $('muteBtn').onclick=()=>{autoSounds=!autoSounds;$('muteBtn').textContent=autoSounds?'♫ WŁ.':'♫ WYŁ.'};
 let audio=null;function beep(freq=440,dur=.07,type='sine',gain=.035){if(!autoSounds)return;try{if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.setValueAtTime(freq,audio.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(80,freq*.6),audio.currentTime+dur);g.gain.setValueAtTime(gain,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+dur)}catch(e){}}
 
+// Poważniejsza, bardziej bitewna pętla Web Audio; nadal bez plików zewnętrznych.
 let nextBeat=0,musicStep=0;const themeA=[0,3,7,10, 0,3,7,12, 0,5,8,12, 0,3,7,10, 2,5,9,12, 2,5,9,14, 0,3,7,10, 0,2,7,9],themeB=[0,5,8,12, 0,5,8,10, -2,3,7,10, 0,5,9,12, 2,7,10,14, 2,5,9,12, 0,5,8,12, -2,3,7,10];
 function note(freq,when,dur,level=.012,wave='triangle',cut=1800){
  if(!audio||!autoSounds)return;
@@ -536,6 +559,7 @@ function playMusic(){if(!autoSounds||!audio||audio.state!=='running'||mode!=='ga
  }
 }
 
+// Ukrycie w roślinności i wspólna widoczność dla gracza oraz AI.
 const BUSHES={
  forest:[[805,335,92],[1120,700,93],[1490,330,85],[2165,698,96],[2650,320,89],[820,1670,95],[1170,1325,91],[1550,1680,92],[2160,1325,94],[2700,1670,92]],
  valley:[[730,575,95],[1190,600,98],[2110,625,96],[2630,600,93],[745,817,92],[1500,815,90],[2440,825,93],[760,1190,95],[1480,1220,93],[2410,1175,98],[1120,1400,92],[2090,1415,96],[2750,1410,96]],
@@ -591,12 +615,12 @@ function spawnSomka(){
   lastHit:0,aggro:null,aggroUntil:0,windup:0,walk:0};
  showFeed('Somka pojawił się w dżungli!',0);
  showNotice('SOMKA — BOSS W DŻUNGLI',2.6);
- ring(x,y,145,'#ffca82',1.35);burst(x,y,'#ffc477',32,135);
+ ring(x,y,145,'#ff9fe7',1.35);burst(x,y,'#ff9be5',32,135);
 }
 function defeatSomka(boss,killer){
  const team=killer&&[0,1].includes(killer.team)?killer.team:null;
  somka=null;somkaNextSpawn=clock+SOMKA_RESPAWN;
- burst(boss.x,boss.y,'#ffc17b',70,220);ring(boss.x,boss.y,160,'#ffdb94',1.4);
+ burst(boss.x,boss.y,'#ff9be5',70,220);ring(boss.x,boss.y,160,'#ffd0f7',1.4);
  if(team===null){showFeed('Somka został pokonany!',0);return}
  somkaBuffUntil[team]=clock+SOMKA_BUFF_DURATION;
  for(const h of heroes){if(h.team!==team)continue;addGold(h,125);grantXP(h,90)}
@@ -655,13 +679,16 @@ function moveToward(u,tx,ty,dt,mult=1,manual=false){
    if(tooOld||changed){u.nav={tx,ty,points:findRoute(u.x,u.y,tx,ty),index:0,until:clock+1.45,atX:u.x,atY:u.y,check:clock+.35,stuck:0}}
    const nav=u.nav;
    if(nav.points.length){
+    // Stopniowo wybieraj najdalszy WIDOCZNY fragment drogi, bez cięcia narożników.
     while(nav.index<nav.points.length-1&&distXY(u.x,u.y,nav.points[nav.index].x,nav.points[nav.index].y)<46)nav.index++;
     const original=nav.index;for(let j=Math.min(original+6,nav.points.length-1);j>original;j--){const p=nav.points[j];if(!terrainRay(u.x,u.y,p.x,p.y,clearance,false).hit){nav.index=j;break}}
     let point=nav.points[nav.index];
     if(terrainRay(u.x,u.y,point.x,point.y,clearance,false).hit){
+     // Jeśli punkt trasy nieosiągalny, znajdź najbliższy dostępny poprzedni.
      for(let j=nav.index-1;j>=0;j--){let p=nav.points[j];if(!terrainRay(u.x,u.y,p.x,p.y,clearance,false).hit){point=p;nav.index=j;break}}
     }
     gx=point.x;gy=point.y;
+    // Gdy bot stoi w miejscu przez dłuższą chwilę, przelicz trasę z NOWEJ pozycji.
     if(clock>=nav.check){const progress=distXY(u.x,u.y,nav.atX,nav.atY);
      nav.stuck=progress<7?nav.stuck+1:0;nav.atX=u.x;nav.atY=u.y;nav.check=clock+.38;
      if(nav.stuck>=2){nav.until=clock-.01;nav.stuck=0}
@@ -673,9 +700,14 @@ function moveToward(u,tx,ty,dt,mult=1,manual=false){
  let dirX=dx/d,dirY=dy/d;
  if(!manual&&u.type!=='boss'){
   const steering=crowdDirection(u,dx,dy);
-  const rate=1-Math.exp(-dt*9);
-  u.walkDX=u.walkDX===undefined?steering.x:u.walkDX+(steering.x-u.walkDX)*rate;
-  u.walkDY=u.walkDY===undefined?steering.y:u.walkDY+(steering.y-u.walkDY)*rate;
+  // Wygładzanie wektora ruchu ogranicza drgania przy zmianach decyzji AI.
+  const rate=1-Math.exp(-dt*6.5);
+  // Gdy cel rzeczywiście zmienia się o >90°, porzuć dawny wektor zamiast
+  // oscylować kilkanaście klatek między starym i nowym kierunkiem.
+  const oldDot=(u.walkDX??steering.x)*steering.x+(u.walkDY??steering.y)*steering.y;
+  const turn=oldDot<-.18?1:rate;
+  u.walkDX=u.walkDX===undefined?steering.x:u.walkDX+(steering.x-u.walkDX)*turn;
+  u.walkDY=u.walkDY===undefined?steering.y:u.walkDY+(steering.y-u.walkDY)*turn;
   const m=Math.hypot(u.walkDX,u.walkDY)||1;dirX=u.walkDX/m;dirY=u.walkDY/m;
  }else{u.walkDX=undefined;u.walkDY=undefined}
  const ox=u.x,oy=u.y;moveUnit(u,dirX*Math.min(d,step),dirY*Math.min(d,step));
@@ -695,32 +727,32 @@ function castAbility(h,n,tx,ty,bot=false){if(!living(h)||h.cool[n]>0||mode!=='ga
  else if(h.hero===4){if(n===0){area(h.x+nx*85,h.y+ny*85,132,1.78).forEach(e=>{if(e.type!=='structure'){e.slowUntil=clock+2.3;e.slowFactor=.52}});ring(h.x+nx*85,h.y+ny*85,132,c);burst(h.x+nx*85,h.y+ny*85,c,22,150)}if(n===1){alliesIn(h.team,h.x,h.y,220).forEach(a=>shield(a,96+h.level*15,5.2));ring(h.x,h.y,213,'#bceeff',.54)}if(n===2){alliesIn(h.team,h.x,h.y,245).forEach(a=>{shield(a,165+h.level*20,6.8);heal(a,46+h.level*8)});area(h.x,h.y,178,1.75).forEach(e=>{if(e.type==='hero'){e.slowUntil=clock+3;e.slowFactor=.55}});ring(h.x,h.y,255,c,.85);burst(h.x,h.y,c,32,250)}}
  else if(h.hero===5){if(n===0){let opts=enemyUnits(h.team).filter(e=>distXY(px,py,e.x,e.y)<230).sort((a,b)=>distXY(px,py,a.x,a.y)-distXY(px,py,b.x,b.y)).slice(0,3);let old={x:h.x,y:h.y};opts.forEach((e,j)=>{damage(e,49+h.damage*(1.32-j*.16),h,'skill');beam(old.x,old.y,e.x,e.y,'#ccff78',6,.3);old=e});if(!opts.length){beam(h.x,h.y,px,py,c,7,.3);burst(px,py,c,12,90)}}if(n===1){ring(px,py,152,c,.6);area(px,py,152,.72).forEach(e=>{if(e.type!=='structure'){let d2=distXY(e.x,e.y,px,py)||1;displaceUnit(e,(px-e.x)/d2*80,(py-e.y)/d2*80);e.slowUntil=clock+2.2;e.slowFactor=.56}})}if(n===2){zones.push({type:'storm',x:px,y:py,r:175,team:h.team,owner:h,life:5.3,max:5.3,damage:31,color:c,tick:0});ring(px,py,175,c,.75)}}
 
- else if(h.hero===6){ 
+ else if(h.hero===6){ // Pooshek: amphibian
   if(n===0){let hit=terrainRay(h.x,h.y,h.x+nx*395,h.y+ny*395,6,true),ex=hit.x,ey=hit.y,span=distXY(h.x,h.y,ex,ey);beam(h.x,h.y-28,ex,ey,c,12,.24);allEnemyUnits(h.team).forEach(e=>{let proj=(e.x-h.x)*nx+(e.y-h.y)*ny,off=Math.abs((e.x-h.x)*ny-(e.y-h.y)*nx);if(proj>0&&proj<span&&off<e.r+18){damage(e,72+h.damage,h,'skill');if(e.type==='hero'){e.slowUntil=clock+1.3;e.slowFactor=.54}}})}
   if(n===1){let ox=h.x,oy=h.y;dashUnit(h,dx,dy,385,true);beam(ox,oy,h.x,h.y,c,5,.22);area(h.x,h.y,115,1.5);ring(h.x,h.y,115,c);shield(h,39+h.level*5,3)}
   if(n===2){area(h.x,h.y,205,2.3).forEach(e=>{if(e.type!=='structure'){e.slowUntil=clock+2.8;e.slowFactor=.42}});ring(h.x,h.y,205,c,.68);burst(h.x,h.y,c,32,230)}
  }
- else if(h.hero===7){ 
+ else if(h.hero===7){ // Felix: super reflexes
   if(n===0){let victims=queryEnemies(h.team,h.x+nx*105,h.y+ny*105,134);victims.forEach(e=>damage(e,75+h.damage*.9,h,'skill'));beam(h.x,h.y-35,h.x+nx*215,h.y+ny*215,'#e8ffff',10,.2);ring(h.x+nx*110,h.y+ny*110,105,c)}
   if(n===1){h.speedBuff=clock+4.7;shield(h,67+h.level*7,4.7);ring(h.x,h.y,90,c,.5);burst(h.x,h.y,c,17,150)}
   if(n===2){let ox=h.x,oy=h.y;dashUnit(h,dx,dy,460);beam(ox,oy,h.x,h.y,'#d9f8ff',25,.33);let l=Math.hypot(h.x-ox,h.y-oy)||1;allEnemyUnits(h.team).forEach(e=>{let proj=((e.x-ox)*(h.x-ox)+(e.y-oy)*(h.y-oy))/l,off=Math.abs((e.x-ox)*(h.y-oy)-(e.y-oy)*(h.x-ox))/l;if(proj>0&&proj<l&&off<e.r+35)damage(e,125+h.damage*2,h,'skill')});ring(h.x,h.y,105,c)}
  }
- else if(h.hero===8){ 
+ else if(h.hero===8){ // EMajster: weather
   if(n===0){let targets=enemyUnits(h.team).filter(e=>distXY(e.x,e.y,px,py)<200).slice(0,3);let prev={x:h.x,y:h.y};if(!targets.length)beam(h.x,h.y,px,py,c,9,.2);targets.forEach((e,j)=>{damage(e,53+h.damage*(1-j*.19),h,'skill');beam(prev.x,prev.y,e.x,e.y,'#f5f9a4',9,.28);prev=e})}
   if(n===1){zones.push({type:'rain',x:px,y:py,r:138,team:h.team,owner:h,life:4.7,max:4.7,damage:5,color:c,tick:0,healBase:14,healLevel:1.5});ring(px,py,138,c);alliesIn(h.team,px,py,156).forEach(a=>heal(a,30+h.level*4))}
   if(n===2){zones.push({type:'storm',x:px,y:py,r:177,team:h.team,owner:h,life:4.8,max:4.8,damage:24,color:'#c0edff',tick:0,slow:.78});ring(px,py,177,c,.78)}
  }
- else if(h.hero===9){ 
+ else if(h.hero===9){ // Staś: seismic punches
   if(n===0){area(h.x+nx*100,h.y+ny*100,122,1.75);ring(h.x+nx*100,h.y+ny*100,116,c);burst(h.x+nx*100,h.y+ny*100,c,16,160)}
   if(n===1){heal(h,54+h.level*6);h.atkBuff=1;h.speedBuff=clock+4.2;shield(h,68+h.level*6,4.2);ring(h.x,h.y,90,c,.6)}
   if(n===2){area(h.x,h.y,236,2.35).forEach(e=>{if(e.type!=='structure'){e.slowUntil=clock+2.2;e.slowFactor=.47}});ring(h.x,h.y,236,c,.68);burst(h.x,h.y,c,42,210);shake+=5}
  }
- else if(h.hero===10){ 
+ else if(h.hero===10){ // Blacky: shadow phase
   if(n===0){let hit=terrainRay(h.x,h.y,h.x+nx*430,h.y+ny*430,7,true),ex=hit.x,ey=hit.y,span=distXY(h.x,h.y,ex,ey);beam(h.x,h.y-29,ex,ey,'#b3a6dd',16,.32);allEnemyUnits(h.team).forEach(e=>{let pr=(e.x-h.x)*nx+(e.y-h.y)*ny,off=Math.abs((e.x-h.x)*ny-(e.y-h.y)*nx);if(pr>0&&pr<span&&off<e.r+28)damage(e,66+h.damage*1.25,h,'skill')})}
   if(n===1){let ox=h.x,oy=h.y;dashUnit(h,dx,dy,305);beam(ox,oy,h.x,h.y,c,19,.24);shield(h,65+h.level*6,3);ring(h.x,h.y,62,c)}
   if(n===2){zones.push({type:'field',x:px,y:py,r:187,team:h.team,owner:h,life:6.1,max:6.1,damage:31,color:'#9d8ec2',tick:0,slow:.55});ring(px,py,187,c,.75)}
  }
- else if(h.hero===11){ 
+ else if(h.hero===11){ // Fleur: plant-biokinesis
   if(n===0){queryEnemies(h.team,px,py,144).forEach(e=>{damage(e,66+h.damage,h,'skill');if(e.type==='hero'){e.slowUntil=clock+2;e.slowFactor=.6}});ring(px,py,144,c);burst(px,py,c,16,118)}
   if(n===1){alliesIn(h.team,h.x,h.y,225).forEach(a=>shield(a,82+h.level*11,4.8));ring(h.x,h.y,220,'#f2b5ec',.62)}
   if(n===2){zones.push({type:'garden',x:px,y:py,r:188,team:h.team,owner:h,life:6.8,max:6.8,damage:18,color:c,tick:0,slow:.8});ring(px,py,188,c,.74)}
@@ -732,7 +764,14 @@ function updateBot(h,dt){
  const mybase=structures.find(s=>s.team===h.team&&s.kind==='core');
  const hpRatio=h.hp/h.maxhp;
  const low=hpRatio<.28;
- let nearest=combatTarget(h,520),enemyHero=closestEnemyHero(h,470),goal=null;
+ let nearest=combatTarget(h,520),enemyHero=closestEnemyHero(h,clock<(h.chaseUntil||0)?600:470),goal=null;
+ // Krótka blokada celu: dwóch podobnie bliskich wrogów nie powoduje ciągłego zawracania.
+ const held=h.targetLock;
+ if(held&&clock<(h.targetLockUntil||0)&&living(held)&&canTeamSee(h.team,held)&&dist(h,held)<610&&(held.type!=='structure'||canDamage(held))){
+  nearest=held;
+ }else{
+  h.targetLock=nearest;h.targetLockUntil=clock+(nearest?1.05:0);
+ }
  const myTower=structures.filter(s=>living(s)&&s.team===h.team&&s.kind==='tower').sort((a,b)=>dist(a,h)-dist(b,h))[0];
  const enemyTower=structures.filter(s=>living(s)&&s.team!==h.team&&s.kind==='tower').sort((a,b)=>dist(a,h)-dist(b,h))[0];
  const allyWave=minions.filter(m=>living(m)&&m.team===h.team&&m.lane===h.lane);
@@ -746,8 +785,17 @@ function updateBot(h,dt){
  const enemiesClose=nearHeroes(1-h.team,h.x,h.y,340).filter(e=>canTeamSee(h.team,e));
  const pressure=enemiesClose.length-alliesClose.length-(hpRatio>.72?1:0);const skillFactor=h.team===1?DIFFICULTY[difficulty].skill:1;
  const retreatDanger=low||(hpRatio<.5&&pressure>0)||(enemyTower&&dist(h,enemyTower)<enemyTower.range*.82&&!alliedNearTarget(enemyTower)&&hpRatio<.84);
- if(retreatDanger)h.retreatUntil=clock+.9;
- const shouldRetreat=retreatDanger||clock<(h.retreatUntil||0);
+ // Decyzja o odwrocie ma histerezę: po rozpoczęciu odwrotu bot regeneruje zdrowie
+ // zanim wróci do walki. Nie waha się między atakiem a ucieczką co klatkę.
+ if(!h.retreating&&retreatDanger&&(clock>=(h.retreatCooldown||0)||hpRatio<.2)){
+  h.retreating=true;h.retreatUntil=clock+2.25;h.targetLock=null;h.nav=null;h.ambush=null;
+ }
+ if(h.retreating&&clock>=(h.retreatUntil||0)&&hpRatio>.85&&
+   (dist(h,basePoint(h.team))<325||!retreatDanger&&pressure<=0)){
+  h.retreating=false;h.retreatCooldown=clock+2.7;h.targetLock=null;h.nav=null;
+ }
+ const shouldRetreat=!!h.retreating;
+ // Zapamiętaj OSTATNIĄ widzianą pozycję. AI nie dostaje wiedzy o ukrytym celu.
  if(enemyHero)h.lastEnemySeen={x:enemyHero.x,y:enemyHero.y,until:clock+1.4,id:enemyHero.id};
  if(nearest&&nearest.type==='hero'&&h.focus&&h.focus.type==='hero'&&living(h.focus)&&canTeamSee(h.team,h.focus)&&dist(h,h.focus)<570)nearest=h.focus;
  if(nearest&&nearest.type==='structure'&&!alliedNearTarget(nearest))nearest=null;
@@ -756,7 +804,10 @@ function updateBot(h,dt){
   if(hostileTurret&&!alliedNearTarget(hostileTurret)&&hpRatio<.9)nearest=null;
  }
  if(somka&&dist(h,somka)<560&&hpRatio>.62&&nearHeroes(h.team,somka.x,somka.y,530).length>=2&&(!nearest||nearest.type==='boss'))nearest=somka;
- const shouldChaseHero=enemyHero&&(enemyHero.hp/enemyHero.maxhp<.46||alliesClose.length>=enemiesClose.length||[1,6,7,10].includes(h.hero));
+ const wantsChase=enemyHero&&(enemyHero.hp/enemyHero.maxhp<.46||alliesClose.length>=enemiesClose.length||[1,6,7,10].includes(h.hero));
+ if(wantsChase&&!shouldRetreat)h.chaseUntil=clock+1.05;
+ const shouldChaseHero=!!enemyHero&&!shouldRetreat&&(wantsChase||clock<(h.chaseUntil||0));
+ // Zasadzki: bot korzysta z najbliższego krzaka, zamiast zawsze ruszać otwartą aleją.
  if(!shouldRetreat&&enemyHero&&dist(h,enemyHero)>h.range+100&&dist(h,enemyHero)<680&&clock>(h.nextAmbush||0)&&hpRatio>.6){
   const candidates=BUSHES[currentMap].filter(b=>distXY(h.x,h.y,b[0],b[1])<250&&distXY(enemyHero.x,enemyHero.y,b[0],b[1])<510&&!solidTerrain(b[0],b[1],h.r+5));
   candidates.sort((a,b)=>distXY(h.x,h.y,a[0],a[1])-distXY(h.x,h.y,b[0],b[1]));
@@ -769,6 +820,7 @@ function updateBot(h,dt){
  else if(shouldChaseHero){goal={x:enemyHero.x,y:enemyHero.y};h.focus=enemyHero;nearest=enemyHero}
  else if(h.team===0&&pushReady&&!enemyHero&&(!nearest||nearest.type!=='hero'&&nearest.type!=='minion')){nearest=laneObjective;goal={x:laneObjective.x,y:laneObjective.y};h.focus=laneObjective}
  else if(!enemyHero&&h.lastEnemySeen&&clock<h.lastEnemySeen.until&&!shouldRetreat&&distXY(h.x,h.y,h.lastEnemySeen.x,h.lastEnemySeen.y)>86){
+  // Krótkie poszukiwanie w miejscu, gdzie rywal był ostatnio widziany.
   goal={x:h.lastEnemySeen.x,y:h.lastEnemySeen.y};nearest=null;h.focus=null;
  }
  else if(nearest){goal={x:nearest.x,y:nearest.y};h.focus=nearest}
@@ -790,6 +842,7 @@ function updateBot(h,dt){
   const d=dist(h,nearest),desired=h.range>240?h.range*.86:h.range<180?h.range*.72:h.range*.8;
   if(d<=h.range+nearest.r+6&&!terrainRay(h.x,h.y,nearest.x,nearest.y,8,true).hit){
    attack(h,nearest);
+   // Histereza dystansu: bot nie zmienia kierunku na każdej klatce przy granicy zasięgu.
    if(h.range>235&&d<desired*.68)h.spaceUntil=clock+.32;
    if(h.range>235&&d>desired*.94)h.spaceUntil=0;
    if(h.range>235&&(h.spaceUntil||0)>clock)moveToward(h,h.x+(h.x-nearest.x),h.y+(h.y-nearest.y),dt,.72);
@@ -810,7 +863,6 @@ function updateBot(h,dt){
   }
  }else if(goal){
   moveToward(h,goal.x,goal.y,dt,shouldRetreat?1.05:1);
-  if(low&&mybase&&dist(h,mybase)<170&&hpRatio>.9)h.hp=h.maxhp;
  }
 }
 function updatePlayer(h,dt){let x=(keys.KeyD?1:0)-(keys.KeyA?1:0),y=(keys.KeyS?1:0)-(keys.KeyW?1:0);let m=Math.hypot(x,y);if(m>0){rightMove=null;moveToward(h,h.x+x/m*100,h.y+y/m*100,dt,1,true);camera.free=0}else if(rightMove){let tar=rightMove.target;if(tar&&living(tar)&&canTeamSee(h.team,tar)){h.focus=tar;rightMove.x=tar.x;rightMove.y=tar.y;let range=h.range+tar.r-4;if(dist(h,tar)>range||terrainRay(h.x,h.y,tar.x,tar.y,8,true).hit)moveToward(h,tar.x,tar.y,dt);else rightMove=null}else if(distXY(h.x,h.y,rightMove.x,rightMove.y)>12)moveToward(h,rightMove.x,rightMove.y,dt);else rightMove=null}
@@ -818,7 +870,16 @@ function updatePlayer(h,dt){let x=(keys.KeyD?1:0)-(keys.KeyA?1:0),y=(keys.KeyS?1
  if(h.focus&&living(h.focus)&&h.focus.team!==h.team&&dist(h,h.focus)<=h.range+h.focus.r+10)attack(h,h.focus);
  else if(!h.focus){let t=combatTarget(h,h.range+22);if(t)attack(h,t)}
 }
-function updateHeroes(dt){for(const h of heroes){h.goldTick+=dt;if(h.goldTick>=1){const ticks=Math.floor(h.goldTick);h.goldTick-=ticks;addGold(h,ticks*3)}if(h.ai&&shopAllowed(h)&&h.items.length<4&&Math.floor(clock*2)%2===0)botShop(h);h.attackCd-=dt;h.attackFlash=Math.max(0,h.attackFlash-dt);h.castAnim=Math.max(0,h.castAnim-dt);h.cool=h.cool.map(v=>Math.max(0,v-dt));if(h.dead){if(clock>=h.respawn){h.dead=false;h.hp=h.maxhp;h.shield=0;const b=spawnPoint(h.team);h.x=b.x+rand(-20,20);h.y=b.y+rand(-20,20);h.focus=null;h.lastEnemySeen=null;h.retreatUntil=0;h.spaceUntil=0;h.walkDX=undefined;h.walkDY=undefined;h.speedBuff=clock+3.2;h.cool=h.cool.map(v=>Math.min(v,3));ring(h.x,h.y,80,TEAMS[h.team]);if(h===player)showNotice('WRACASZ DO GRY!',1.2)}continue}if(h.shield&&clock>h.shieldEnd)h.shield=0;if(h.type==='hero'&&h.hp<h.maxhp){h.regen+=dt;if(h.regen>.85){let b=basePoint(h.team),nearBase=distXY(h.x,h.y,b.x,b.y)<240;h.hp=Math.min(h.maxhp,h.hp+(nearBase?14:2.6)+h.extraRegen);h.regen=0}}if(h===player)updatePlayer(h,dt);else updateBot(h,dt)}}
+function updateHeroes(dt){for(const h of heroes){h.goldTick+=dt;if(h.goldTick>=1){const ticks=Math.floor(h.goldTick);h.goldTick-=ticks;addGold(h,ticks*3)}if(h.ai&&shopAllowed(h)&&h.items.length<4&&Math.floor(clock*2)%2===0)botShop(h);h.attackCd-=dt;h.attackFlash=Math.max(0,h.attackFlash-dt);h.castAnim=Math.max(0,h.castAnim-dt);h.cool=h.cool.map(v=>Math.max(0,v-dt));if(h.dead){if(clock>=h.respawn){h.dead=false;h.hp=h.maxhp;h.shield=0;const b=spawnPoint(h.team);h.x=b.x+rand(-20,20);h.y=b.y+rand(-20,20);h.focus=null;h.lastEnemySeen=null;h.retreating=false;h.retreatUntil=0;h.retreatCooldown=0;h.targetLock=null;h.targetLockUntil=0;h.chaseUntil=0;h.spaceUntil=0;h.walkDX=undefined;h.walkDY=undefined;h.speedBuff=clock+3.2;h.cool=h.cool.map(v=>Math.min(v,3));ring(h.x,h.y,80,TEAMS[h.team]);if(h===player)showNotice('WRACASZ DO GRY!',1.2)}continue}if(h.shield&&clock>h.shieldEnd)h.shield=0;if(h.type==='hero'&&h.hp<h.maxhp){
+ const base=basePoint(h.team),nearBase=distXY(h.x,h.y,base.x,base.y)<285;
+ if(nearBase){
+  // Stacja regeneracji przy rdzeniu: pełne leczenie w kilka sekund, również dla AI.
+  h.hp=Math.min(h.maxhp,h.hp+dt*(h.maxhp*.23+12+(h.extraRegen||0)*1.5));h.regen=0;
+ }else{
+  h.regen+=dt;
+  if(h.regen>=.85){h.hp=Math.min(h.maxhp,h.hp+2.6+(h.extraRegen||0));h.regen-=.85}
+ }
+}if(h===player)updatePlayer(h,dt);else updateBot(h,dt)}}
 function updateShots(dt){for(let i=shots.length-1;i>=0;i--){let s=shots[i];s.life-=dt;if(s.life<=0){shots.splice(i,1);continue}if(living(s.target)&&canTeamSee(s.team,s.target)){s.tx=s.target.x;s.ty=s.target.y}let dx=s.tx-s.x,dy=s.ty-s.y,d=Math.hypot(dx,dy)||1,step=s.speed*dt,arrived=d<step+s.r+5;s.trail.push({x:s.x,y:s.y});if(s.trail.length>7)s.trail.shift();let nx=s.x+dx/d*Math.min(d,step),ny=s.y+dy/d*Math.min(d,step),hit=terrainRay(s.x,s.y,nx,ny,s.r*.6,true);if(hit.hit){burst(hit.x,hit.y,s.color,9,52);shots.splice(i,1);continue}s.x=nx;s.y=ny;if(arrived){if(living(s.target)&&distXY(s.x,s.y,s.target.x,s.target.y)<s.target.r+60)damage(s.target,s.damage,s.owner);burst(s.x,s.y,s.color,5,50);shots.splice(i,1)}}}
 function updateZones(dt){for(let i=zones.length-1;i>=0;i--){let z=zones[i];z.life-=dt;if(z.follow&&living(z.follow)){z.x=z.follow.x;z.y=z.follow.y}if(z.type==='strike'&&z.life<=0&&!z.done){z.done=true;queryEnemies(z.team,z.x,z.y,z.r).forEach(e=>damage(e,z.damage,z.owner,'skill'));burst(z.x,z.y,z.color,56,265);ring(z.x,z.y,z.r*1.2,z.color,.62);shake+=9;beep(120,.31,'sawtooth',.07)}if(z.type!=='strike'){z.tick-=dt;if(z.tick<=0){z.tick=z.type==='storm'?.62:.85;if(z.type!=='rain')queryEnemies(z.team,z.x,z.y,z.r).forEach(e=>{damage(e,z.damage,z.owner,'skill');if(z.slow&&e.type==='hero'){e.slowUntil=clock+1;e.slowFactor=z.slow}});if(z.type==='rain')alliesIn(z.team,z.x,z.y,z.r).forEach(h=>heal(h,(z.healBase??21)+z.owner.level*(z.healLevel??2)));if(z.type==='garden')alliesIn(z.team,z.x,z.y,z.r).forEach(h=>heal(h,22+z.owner.level*2));if(z.type==='storm')burst(z.x+rand(-70,70),z.y+rand(-70,70),z.color,8,155)}}if(z.life<=0)zones.splice(i,1)}}
 function endMatch(team){if(mode==='end')return;$('shopOverlay').classList.remove('open');mode='end';$('endScreen').style.display='flex';$('resultTitle').textContent=team===0?'WYGRANA':'PORAŻKA';$('resultTitle').style.color=team===0?'#94ffd3':'#ff96a6';$('resultDesc').textContent=team===0?'Karmin przełamany. Arena dla Azuru.':'Azur upadł. Czas na rewanż.';$('resultStats').textContent=`${player.kills} elim. · ${player.assists} asyst · ${formatTime(clock)}`;$('endScreen').querySelector('.minor').textContent=`CACTULEGENDS · ${mapName().toUpperCase()}`;beep(team===0?680:180,.45,'triangle',.08)}
@@ -851,12 +912,14 @@ function prepareGround(){const c=document.createElement('canvas');c.width=WORLD.
  for(let lane=0;lane<laneCount();lane++){let r=getPath(0,lane);roundedLine(g,r,currentMap==='rift'?170:180,currentMap==='rift'?'#2f4f347f':'#345d3878');roundedLine(g,r,currentMap==='rift'?146:155,'#b4a37a');roundedLine(g,r,currentMap==='rift'?132:140,'#c8b58d');roundedLine(g,r,currentMap==='rift'?118:126,'#d5c49b');g.save();g.setLineDash([5,20]);roundedLine(g,r,4,'#fff0be38');g.restore();
   if(currentMap==='rift'){let bridge=riftBridges[lane];if(bridge){g.save();g.translate(bridge.x,bridge.y);g.rotate(-PI/4);g.fillStyle='#a99d82';g.fillRect(-182,-102,364,204);g.fillStyle='#d0c3a0';g.fillRect(-174,-89,348,178);g.strokeStyle='#837661';g.lineWidth=6;g.strokeRect(-174,-89,348,178);for(let x=-155;x<168;x+=26){g.strokeStyle='#9b8f75';g.lineWidth=2;g.beginPath();g.moveTo(x,-81);g.lineTo(x+6,81);g.stroke()}g.restore()}}else{let y=laneY(lane);g.fillStyle='#b8af96';g.fillRect(1650,y-101,300,202);g.fillStyle='#d1c6a4';g.fillRect(1655,y-88,292,176);g.strokeStyle='#857e66';g.lineWidth=6;g.strokeRect(1660,y-90,280,180);for(let x=1675;x<1942;x+=31){g.strokeStyle='#ab9e80';g.lineWidth=2;g.beginPath();g.moveTo(x,y-82);g.lineTo(x+7,y+82);g.stroke()}}}
  for(let t=0;t<2;t++){let b=basePoint(t),x=b.x,y=b.y,col=t?'#d88b72':'#91c8a8';disk(g,x,y,170,'#bfb390');disk(g,x,y,154,'#d5c79e');g.strokeStyle=col;g.lineWidth=13;g.beginPath();g.arc(x,y,141,0,TAU);g.stroke();g.strokeStyle='#866b4d55';g.lineWidth=2;for(let a=0;a<10;a++){let th=TAU*a/10;g.beginPath();g.moveTo(x+Math.cos(th)*120,y+Math.sin(th)*120);g.lineTo(x+Math.cos(th)*151,y+Math.sin(th)*151);g.stroke()}}
+ // Trees have trunks and foliage but share the same collision circles as movement.
  for(const [x,y,r] of SOLID_TREES[currentMap]){
   disk(g,x+9,y+12,r+9,'#162e2388');disk(g,x,y+7,r*.72,'#634a31');
   for(let a=0;a<6;a++){let th=TAU*a/6;disk(g,x+Math.cos(th)*r*.36,y+Math.sin(th)*r*.34,r*.62,a%2?'#2f6540':'#397a42')}
   disk(g,x-9,y-13,r*.59,'#55944b');disk(g,x-16,y-23,r*.24,'#77b566');
   g.strokeStyle='#1c4d34';g.lineWidth=4;g.beginPath();g.arc(x,y,r,0,TAU);g.stroke();
  }
+ // Solid rocks use the exact same circles as terrain collisions.
  for(const [x,y,r] of TERRAIN[currentMap].rocks){
   disk(g,x+8,y+12,r+8,'#1f3d30a8');disk(g,x,y,r,'#485b58');disk(g,x-6,y-8,r*.86,'#6c8175');
   disk(g,x-r*.22,y-r*.4,r*.32,'#93a297');
@@ -878,27 +941,48 @@ function ground(){if(!terrainCanvas)prepareGround();ctx.drawImage(terrainCanvas,
 function drawSomka(b){
  const c=ctx,x=b.x,y=b.y,t=clock;
  c.save();c.translate(x,y);
- c.fillStyle='#091b18a8';c.beginPath();c.ellipse(12,16,92,35,0,0,TAU);c.fill();
- c.translate(0,Math.sin(t*2.2)*2.2);
- c.fillStyle='#3f5944';c.strokeStyle='#1c352d';c.lineWidth=7;
- c.beginPath();c.ellipse(0,-52,68,68,0,0,TAU);c.fill();c.stroke();
- c.fillStyle='#668267';c.beginPath();c.ellipse(-10,-72,48,45,-.2,0,TAU);c.fill();
- for(let i=0;i<7;i++){let a=i*TAU/7;disk(c,Math.cos(a)*49,Math.sin(a)*42-87,12,i%2?'#356345':'#49784b')}
- c.fillStyle='#384d40';c.beginPath();c.ellipse(-65,-30,24,27,.4,0,TAU);c.fill();c.beginPath();c.ellipse(66,-28,24,27,-.4,0,TAU);c.fill();
- c.fillStyle='#8f9d7b';disk(c,-58,-18,19,'#89977b');disk(c,58,-18,19,'#89977b');
- c.strokeStyle='#254332';c.lineWidth=10;c.lineCap='round';c.beginPath();c.moveTo(-40,-99);c.lineTo(-6,-94);c.moveTo(10,-94);c.lineTo(42,-99);c.stroke();
- disk(c,-24,-89,13,'#dce7bb');disk(c,25,-89,13,'#dce7bb');disk(c,-21,-87,5,'#182d24');disk(c,23,-87,5,'#182d24');
- c.fillStyle='#35483e';c.beginPath();c.ellipse(0,-63,27,17,0,0,TAU);c.fill();
- c.fillStyle='#9aad8a';c.beginPath();c.ellipse(0,-69,21,8,0,0,TAU);c.fill();
- c.fillStyle='#24342e';c.beginPath();c.ellipse(1,-46,32,13,0,0,TAU);c.fill();
- poly(c,[[-29,-53],[-18,-32],[-10,-54]],'#ece3bc','#746e55',2);
- poly(c,[[29,-53],[18,-32],[10,-54]],'#ece3bc','#746e55',2);
+ c.fillStyle='#2a12338f';c.beginPath();c.ellipse(12,18,90,34,0,0,TAU);c.fill();
+ c.translate(0,Math.sin(t*2.15)*2.6);
+ // Różowo-fioletowy slime: galaretowata masa z oczami i płynnymi wypustkami.
+ const wob1=Math.sin(t*2.4)*2.2,wob2=Math.cos(t*2.1)*1.8;
+ c.beginPath();
+ c.moveTo(-62,-22);
+ c.quadraticCurveTo(-76,-76,-38,-102+wob1);
+ c.quadraticCurveTo(-18,-121,3,-106+wob2);
+ c.quadraticCurveTo(24,-123,44,-97+wob1);
+ c.quadraticCurveTo(79,-70,68,-20);
+ c.quadraticCurveTo(77,11,49,27);
+ c.quadraticCurveTo(32,37,20,48);
+ c.quadraticCurveTo(8,60,-3,48);
+ c.quadraticCurveTo(-18,63,-31,47);
+ c.quadraticCurveTo(-43,33,-55,24);
+ c.quadraticCurveTo(-76,7,-62,-22);
+ c.closePath();
+ const body=c.createRadialGradient(-16,-72,8,2,-28,108);
+ body.addColorStop(0,'#ffb9f2');body.addColorStop(.45,'#ee79d6');body.addColorStop(.8,'#b24dd1');body.addColorStop(1,'#6b2e9f');
+ c.fillStyle=body;c.fill();
+ c.strokeStyle='#6a2d91';c.lineWidth=7;c.stroke();
+ // Wewnętrzna galaretka / połysk
+ c.globalAlpha=.52;
+ c.beginPath();c.ellipse(-10,-66,42,28,-.2,0,TAU);c.fillStyle='#ffd8fb';c.fill();
+ c.globalAlpha=.28;
+ c.beginPath();c.ellipse(18,-28,36,20,.15,0,TAU);c.fillStyle='#ffb6f1';c.fill();
+ c.globalAlpha=1;
+ // Małe bąbelki slime'a
+ for(const s of [[-48,-6,9],[-26,24,7],[40,8,8],[54,-24,6]]){disk(c,s[0],s[1],s[2],s[0]>0?'#d96fea':'#c85be4')}
+ // Oczy
+ disk(c,-22,-60,15,'#fff6fd');disk(c,22,-60,15,'#fff6fd');disk(c,-19,-58,5.6,'#2b1536');disk(c,24,-58,5.6,'#2b1536');
+ disk(c,-24,-63,2.1,'#ffffff');disk(c,20,-63,2.1,'#ffffff');
+ // Usta i lekki śluzowy pyszczek
+ c.fillStyle='#8a2d82';c.beginPath();c.ellipse(1,-31,24,13,0,0,TAU);c.fill();
+ c.fillStyle='#ff96c9';c.beginPath();c.ellipse(1,-27,16,8,0,0,TAU);c.fill();
+ c.strokeStyle='#ffdbfb88';c.lineWidth=3;c.beginPath();c.moveTo(-14,-86);c.quadraticCurveTo(-8,-97,-2,-92);c.moveTo(10,-96);c.quadraticCurveTo(18,-108,25,-95);c.stroke();
  c.restore();
  const width=176,ratio=Math.max(0,b.hp/b.maxhp);
- c.fillStyle='#0d211bf2';c.fillRect(x-width/2-4,y-164,width+8,14);
- c.fillStyle='#5b3a28';c.fillRect(x-width/2,y-160,width,6);
- c.fillStyle='#f2ad65';c.fillRect(x-width/2,y-160,width*ratio,6);
- c.fillStyle='#fff2c6';c.font='bold 17px Cactu,Arial';c.textAlign='center';c.fillText('SOMKA',x,y-174);
+ c.fillStyle='#1c1022f2';c.fillRect(x-width/2-4,y-164,width+8,14);
+ c.fillStyle='#5b2b67';c.fillRect(x-width/2,y-160,width,6);
+ c.fillStyle='#ffa4eb';c.fillRect(x-width/2,y-160,width*ratio,6);
+ c.fillStyle='#ffe9fb';c.font='bold 17px Cactu,Arial';c.textAlign='center';c.fillText('SOMKA',x,y-174);
 }
 function drawObjective(s){const c=ctx,team=TEAMS[s.team];if(s.dead){if(s.kind==='inhib'){c.save();c.translate(s.x,s.y);c.globalAlpha=.22;disk(c,0,0,53,team);hex(c,0,0,37,'#1d2934',team,clock*.3);c.restore()}else{disk(c,s.x,s.y,35,'#26333c');hex(c,s.x,s.y,28,'#17212b','#576674',PI/6)}return}
  c.save();c.translate(s.x,s.y);let t=clock; // Fake extrusion and cast shadow
@@ -918,7 +1002,9 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
  function fuzzBlob(cx,cy,r,fill,edge,pts=22,jitter=5){c.save();c.translate(cx,cy);c.fillStyle=fill;c.strokeStyle=edge;c.lineWidth=3;c.beginPath();for(let i=0;i<pts;i++){let a=TAU*i/pts;let rr=r+Math.sin(time*2+i*1.4)*1.2+((i%2)?jitter:-jitter*.45);let xx=Math.cos(a)*rr,yy=Math.sin(a)*rr;c[i?'lineTo':'moveTo'](xx,yy)}c.closePath();c.fill();c.stroke();c.restore()}
  function tail(points,fill,stroke='#7d90a6'){poly(c,points,fill,stroke,3)}
  c.fillStyle='#274b4061';c.beginPath();c.ellipse(0,8,26,8,0,0,TAU);c.fill();
- if(idx===0){ 
+ if(idx===0){ // Evolveye
+  // Czytelny błękitny płomyk z referencji: trzy górne języki i duże oko.
+  // Zmieniamy same czubki, bez wyginania boków w „futro” lub dodatkowe narośla.
   c.save();
   c.translate(0,Math.sin(time*1.75)*.7);
   const top=Math.sin(time*2.4)*1.6;
@@ -926,14 +1012,19 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
   const right=Math.sin(time*2.55+1.6)*1.2;
   const side=Math.sin(time*1.8+.4)*.6;
   c.beginPath();
+  // dolny, zaokrąglony brzeg
   c.moveTo(0,4);
   c.bezierCurveTo(-18,4,-32,-3,-34,-19);
+  // lewy bok i mały lewy język płomienia
   c.bezierCurveTo(-36,-34,-32,-52,-28+left*.2,-66+left);
   c.bezierCurveTo(-24,-62+left*.5,-19,-57,-13,-55);
+  // wysoki środkowy język i głęboka przerwa po nim
   c.bezierCurveTo(-9,-63,-3,-79,0+top*.18,-86+top);
   c.bezierCurveTo(4,-75,7,-62,12,-55);
+  // trzeci język po prawej, bez wypukłej narośli
   c.bezierCurveTo(18,-62,22,-66,26+right*.25,-69+right);
   c.bezierCurveTo(26,-59,28,-54,29,-48);
+  // gładki prawy bok bez futrzanych występów
   c.bezierCurveTo(31+side,-41,35,-30,34,-20);
   c.bezierCurveTo(34,-7,20,4,0,4);
   c.closePath();
@@ -947,12 +1038,14 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
   c.strokeStyle='#082849';
   c.lineWidth=2.5;
   c.stroke();
+  // delikatny blask w obrębie płomienia, bez dodawania nowej masy
   c.save();c.clip();
   const innerGlow=c.createRadialGradient(-11,-40,4,-3,-26,42);
   innerGlow.addColorStop(0,'#56b8ff58');
   innerGlow.addColorStop(1,'#4aabff00');
   c.fillStyle=innerGlow;c.fillRect(-40,-90,80,100);
   c.restore();
+  // duża biała gałka i niemal okrągła ciemna źrenica jak w obrazku
   c.fillStyle='#ffffff';
   c.beginPath();c.ellipse(-1,-23,19.1,20.1,0,0,TAU);c.fill();
   c.strokeStyle='#b9dff5';c.lineWidth=1.1;c.stroke();
@@ -961,7 +1054,8 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
   c.fillStyle='#ffffff';
   c.beginPath();c.ellipse(-1,-26,3.2,3.7,0,0,TAU);c.fill();
   c.restore();
-}else if(idx===1){ 
+}else if(idx===1){ // Ranfisz
+  // Teeworlds-like kulka: żółta bryła, duże czarne oczy, pasy schowane w obrysie i kubek niżej.
   c.save();
   c.rotate(-.025+Math.sin(time*1.1)*.01);
   c.fillStyle='#9a7219';
@@ -980,6 +1074,7 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
   c.closePath();
   c.fill();
   c.strokeStyle='#2f2316';c.lineWidth=2.8;c.stroke();
+  // bands inset so they don't stick out beyond the silhouette
   c.fillStyle='#5c4a34';
   c.beginPath();
   c.moveTo(-25,-30);c.quadraticCurveTo(-10,-34,2,-33.5);c.quadraticCurveTo(18,-33,28,-29);
@@ -994,6 +1089,7 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
   c.fillStyle='#d39a29';
   c.beginPath();c.ellipse(-18,-18,10,11,-.25,0,TAU);c.fill();
   c.strokeStyle='#8c6514';c.lineWidth=2.2;c.stroke();
+  // lowered mug connection
   c.strokeStyle='#4c3624';c.lineWidth=3;c.beginPath();c.moveTo(20,-28);c.lineTo(28,-29);c.stroke();
   let mug=c.createLinearGradient(29,-40,49,-21);mug.addColorStop(0,'#d31919');mug.addColorStop(.65,'#ef2d22');mug.addColorStop(1,'#8e1313');
   c.fillStyle=mug;c.fillRect(29,-40,18,16);
@@ -1002,35 +1098,42 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
   c.strokeStyle='#d7d7d7';c.lineWidth=1.5;
   for(let s=0;s<2;s++){c.beginPath();c.moveTo(35+s*5,-42);c.quadraticCurveTo(31+s*5,-51,37+s*5,-59);c.stroke()}
   c.restore();
- }else if(idx===2){ 
+ }else if(idx===2){ // Mechutea
+  // Krzak / kulka mchu z czarnymi oczami i kwiatami dookoła.
   ball(-12+stride*2.2,2,8,'#477d4d');ball(12-stride*2.2,2,8,'#477d4d');
   fuzzBlob(0,-30,33,'#82b63f','#3d6d2f',30,3.2);
   let moss=c.createRadialGradient(-6,-47,3,0,-27,38);moss.addColorStop(0,'#a2d04f');moss.addColorStop(.65,'#5d973d');moss.addColorStop(1,'#2f5c35');
   c.fillStyle=moss;c.beginPath();c.arc(0,-30,28,0,TAU);c.fill();
+  // face
   c.fillStyle='#101314';
   c.beginPath();c.ellipse(-8,-31,4.4,5.8,-.12,0,TAU);c.fill();
   c.beginPath();c.ellipse(10,-30,4.6,6,.12,0,TAU);c.fill();
   disk(c,-9.4,-33.6,1.7,'#fffefc');disk(c,8.7,-33.2,1.85,'#fffefc');disk(c,-6,-29.1,.82,'#d7fff6');disk(c,12.4,-28.6,.9,'#d7fff6');
   c.fillStyle='#ff8dc0';disk(c,-16,-27,2.2,'#ff9dcb',false);disk(c,18,-26,2.2,'#ff9dcb',false);
   c.fillStyle='#b13078';c.beginPath();c.arc(1,-21,6.2,0,PI);c.fill();c.fillStyle='#ffb1d7';c.beginPath();c.arc(1,-21,4.2,0,PI);c.fill();
+  // blossom branch on top-right
   c.strokeStyle='#7e5a45';c.lineWidth=1.8;c.beginPath();c.moveTo(11,-54);c.lineTo(16,-65);c.moveTo(16,-65);c.lineTo(21,-72);c.moveTo(16,-65);c.lineTo(11,-73);c.stroke();
   for(const [px,py,sz] of [[22,-73,4.6],[11,-74,4.3],[16,-66,3.7]]){for(let i=0;i<5;i++){let a=TAU*i/5;disk(c,px+Math.cos(a)*sz,py+Math.sin(a)*sz,2.5,'#ffdbe9',false)}disk(c,px,py,1.6,'#f2c55b',false)}
+  // flower ring at base
   for(const [px,py,sz] of [[-22,-6,5.2],[-11,-2,4.8],[0,0,5.4],[12,-1,5.1],[24,-5,4.7],[18,4,4.8],[-19,4,4.7]]){for(let i=0;i<5;i++){let a=TAU*i/5;disk(c,px+Math.cos(a)*sz,py+Math.sin(a)*sz,2.9,'#ffe3ee',false)}disk(c,px,py,1.7,'#f6d16b',false)}
   for(let i=0;i<6;i++){disk(c,-28+i*11,-60+Math.sin(i+time*2)*2,1.2,'#ffd8e8',false)}
- }else if(idx===3){ 
+ }else if(idx===3){ // Tomangelo
   c.save();c.rotate(Math.sin(time*1.5)*.03);
   c.strokeStyle='#7c5cb8';c.lineWidth=16;c.beginPath();c.moveTo(-3,-12);c.bezierCurveTo(-18,-7,-21,-15,-19,-29);c.lineTo(-6,-63);c.bezierCurveTo(3,-87,29,-79,25,-59);c.lineTo(6,-18);c.bezierCurveTo(-2,-1,-24,-8,-25,-24);c.stroke();
   c.strokeStyle='#ead7ff';c.lineWidth=8;c.stroke();
   c.strokeStyle='#9e7bd7';c.lineWidth=2.6;c.beginPath();c.moveTo(-16,-31);c.lineTo(-4,-58);c.stroke();
   eye(-9,-77,9);eye(17,-77,9);c.strokeStyle='#9e7bd7';c.beginPath();c.arc(4,-67,7,.05,PI-.2);c.stroke();
   c.restore();
- }else if(idx===4){
+ }else if(idx===4){ // Murshtin — human face peeking out from a vertical brick wall
+  // Human head, hairstyle and facial expression are intentionally distinctive at tiny sprite sizes.
   c.save();
+  // Shoulder, mostly hidden behind the wall.
   c.fillStyle='#4b4e55';
   c.beginPath();c.moveTo(-37,-4);c.bezierCurveTo(-39,-18,-34,-27,-20,-30);
   c.bezierCurveTo(-6,-32,5,-20,9,-4);c.closePath();c.fill();
   c.strokeStyle='#a1a1a5';c.lineWidth=1.8;
   c.beginPath();c.moveTo(-32,-8);c.quadraticCurveTo(-25,-20,-16,-19);c.stroke();
+  // Asymmetric face, turned a little toward the player.
   const skin=c.createLinearGradient(-40,-67,8,-27);
   skin.addColorStop(0,'#e5e5e5');skin.addColorStop(.38,'#bcbec1');
   skin.addColorStop(.8,'#85888d');skin.addColorStop(1,'#63676b');
@@ -1042,8 +1145,10 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
   c.bezierCurveTo(-15,-22,-26,-28,-32,-37);
   c.bezierCurveTo(-34,-42,-39,-46,-36,-58);
   c.closePath();c.fill();c.stroke();
+  // Ear gives a human rather than blob silhouette.
   c.fillStyle='#9c9da2';c.beginPath();c.ellipse(-35,-44,4.2,7,-.22,0,TAU);c.fill();
   c.strokeStyle='#56595f';c.lineWidth=1.3;c.beginPath();c.arc(-35,-44,2.5,-PI/2,PI/2);c.stroke();
+  // Short textured grayscale hair and raised quiff, similar to the supplied photo.
   const hair=c.createLinearGradient(-34,-83,1,-54);
   hair.addColorStop(0,'#e0e0e0');hair.addColorStop(.34,'#727477');hair.addColorStop(1,'#2c2f34');
   c.fillStyle=hair;c.strokeStyle='#292b2e';c.lineWidth=1.6;
@@ -1060,6 +1165,7 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
    c.strokeStyle=i%2?'#bfc0c2':'#77797e';c.lineWidth=i%2?1.5:1.1;
    c.beginPath();c.moveTo(xx,yy);c.quadraticCurveTo(xx+2,-78+(i%3)*3,xx+5,yy-3);c.stroke();
   }
+  // Face modelling: temple, brows, human eyes, nose and slight grin.
   c.strokeStyle='#6d7075';c.lineWidth=1.3;c.beginPath();
   c.moveTo(-27,-54);c.quadraticCurveTo(-21,-58,-15,-55);
   c.moveTo(-8,-53);c.quadraticCurveTo(-3,-55,2,-51);c.stroke();
@@ -1074,6 +1180,7 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
   c.moveTo(-21,-33);c.quadraticCurveTo(-12,-28,-4,-34);c.stroke();
   c.strokeStyle='#e0e0e0';c.lineWidth=1;c.beginPath();c.moveTo(-18,-32);c.lineTo(-8,-32);c.stroke();
   c.restore();
+  // Wall drawn last to make the face visibly peek out from behind it.
   c.save();
   const wallX=1,wallY=-81,wallW=42,wallH=82;
   c.fillStyle='#322013';c.fillRect(wallX-2,wallY-1,wallW+3,wallH+3);
@@ -1092,25 +1199,26 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
    }
   }
   c.restore();
+  // Dark wall rim and its shadow cast on the visible cheek.
   c.fillStyle='#0000004c';c.fillRect(-3,-78,4,77);
   c.strokeStyle='#302014';c.lineWidth=2.1;
   c.beginPath();c.moveTo(1,-81);c.lineTo(1,1);c.stroke();
- }else if(idx===5){ 
+ }else if(idx===5){ // Klimax
   c.save();c.translate(0,-39);
   for(let k=0;k<3;k++){c.save();c.rotate(k*PI/3+time*(k%2?-.28:.25));c.strokeStyle=k===0?'#e9ff95':'#a9f16d';c.lineWidth=3.6;c.beginPath();c.ellipse(0,0,40,17,0,0,TAU);c.stroke();disk(c,40,0,4.6,'#fbfd98');c.restore()}
   ball(0,0,24,'#83ca3a');disk(c,0,-1,20,'#b2ea59');eye(-7,-4,5.8);eye(8,-4,5.8);smile(1,6,6);c.restore();
- }else if(idx===6){ 
+ }else if(idx===6){ // Pooshek
   ball(-15+stride*3.4,2,9,'#318c52');ball(15-stride*3.4,2,9,'#318c52');
   poly(c,[[-18,-11],[-25,-29],[-16,-50],[16,-50],[25,-29],[18,-11],[5,-4],[-5,-4]],'#55b764','#2b7c44',3.2);
   ball(-14,-58,11,'#4fac61');ball(14,-58,11,'#4fac61');eye(-14,-59,8);eye(14,-59,8);
   c.strokeStyle='#245b35';c.lineWidth=2.6;c.beginPath();c.moveTo(-11,-28);c.quadraticCurveTo(0,-19,11,-28);c.stroke();
- }else if(idx===7){ 
+ }else if(idx===7){ // Felix
   ball(-13+stride*3,-4,9,'#d9e4ea');ball(14-stride*3,-4,9,'#d9e4ea');
   tail([[-28,-8],[-40,-18],[-39,-39],[-25,-31],[-18,-18]],'#f5f9fb','#b2c4d1');
   poly(c,[[-24,-35],[-24,-80],[-6,-61],[0,-64],[7,-61],[24,-80],[24,-35],[10,-10],[-10,-10]],'#f9fbfd','#9ab1bf',3.2);
   poly(c,[[-21,-70],[-18,-54],[-9,-60]],'#f0c4d6');poly(c,[[9,-60],[18,-54],[21,-70]],'#f0c4d6');
   poly(c,[[-16,-31],[0,-18],[16,-31],[0,-6]],'#e7edf4');eye(-8,-37,5.5,'#243444');eye(8,-37,5.5,'#243444');poly(c,[[-4,-23],[4,-23],[0,-17]],'#202d3a');c.strokeStyle='#738b9f';c.lineWidth=1.8;c.beginPath();c.arc(0,-14,9,.3,PI-.3);c.stroke();
- }else if(idx===8){
+ }else if(idx===8){ // EMajster
   c.save();c.translate(0,Math.sin(time*2)*1.4);
   let gr=c.createLinearGradient(0,-68,0,-10);gr.addColorStop(0,'#edfaff');gr.addColorStop(1,'#8ec6df');
   for(const [xx,yy,rr] of [[-24,-38,16],[-8,-52,17],[10,-54,18],[28,-40,15],[2,-28,23],[-17,-24,13]])ball(xx,yy,rr,gr,false);
@@ -1118,17 +1226,17 @@ function drawAvatar(c,idx,x,y,time=0,walk=0,team=0){
   eye(-8,-38,4.8,'#31485b');eye(11,-38,4.8,'#31485b');smile(2,-28,5.6);
   c.strokeStyle='#d8f4ff';c.lineWidth=2.2;for(let k=-1;k<=1;k++){let xx=k*17,yy=-2+Math.sin(time*4+k)*2.4;c.beginPath();c.moveTo(xx,yy);c.lineTo(xx-1,yy+9);c.stroke()}
   poly(c,[[-2,-10],[6,-10],[0,0],[9,0],[-6,18],[-4,7],[-12,7]],'#fff17b','#dfc656',1.6);c.restore();
- }else if(idx===9){ 
+ }else if(idx===9){ // Stas
   ball(-16+stride*3,3,10,'#9d3942');ball(15-stride*3,3,10,'#9d3942');
   poly(c,[[-22,-10],[-31,-28],[-19,-43],[19,-43],[32,-26],[22,-10]],'#ea5956','#9d3942',3);
   ball(0,-56,23,'#f1bb8a');disk(c,-23,-54,5,'#dfaa83');disk(c,23,-54,5,'#dfaa83');
   c.strokeStyle='#5b3b2c';c.lineWidth=2.5;c.beginPath();c.moveTo(-14,-62);c.lineTo(-6,-63);c.moveTo(7,-63);c.lineTo(15,-62);c.stroke();disk(c,-10,-56,2.6,'#3a302b');disk(c,10,-56,2.6,'#3a302b');
   c.fillStyle='#704935';c.beginPath();c.ellipse(0,-41,12,5,0,0,TAU);c.fill();
- }else if(idx===10){ 
+ }else if(idx===10){ // Blacky
   c.strokeStyle='#d0d7e8';c.lineWidth=3.4;
   c.fillStyle='#273044';c.beginPath();c.moveTo(-30,-1);c.quadraticCurveTo(-31,-33,-12,-37);c.lineTo(-10,-49);c.lineTo(11,-49);c.lineTo(13,-37);c.quadraticCurveTo(34,-31,30,-1);c.closePath();c.fill();c.stroke();
   ball(0,-65,19,'#364053');c.strokeStyle='#dbe3f2';c.lineWidth=3;c.beginPath();c.arc(0,-65,19,0,TAU);c.stroke();disk(c,-8,-65,3,'#f2f6ff');disk(c,8,-65,3,'#f2f6ff');c.strokeStyle='#91a4bd';c.lineWidth=2;c.beginPath();c.arc(0,-58,5,0,PI);c.stroke();
- }else if(idx===11){ 
+ }else if(idx===11){ // Fleur
   ball(-11+stride*3,0,9,'#ad5db4');ball(13-stride*3,0,9,'#ad5db4');
   ball(0,-31,27,'#bb5ac9');disk(c,0,-34,23,'#dd8ae1');leaf(-5,-58,-1,'#78bb61');leaf(8,-60,.72,'#6eb95d');for(let k=0;k<6;k++){let a=k*TAU/6;disk(c,14+Math.cos(a)*8,-65+Math.sin(a)*8,5.5,'#fff7ee')}disk(c,14,-65,4.5,'#f2d458');
   c.fillStyle='#21172d';c.beginPath();c.ellipse(-9,-37,4.7,5.7,-.08,0,TAU);c.fill();c.beginPath();c.ellipse(11,-37,4.9,5.9,.08,0,TAU);c.fill();
