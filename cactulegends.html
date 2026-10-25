@@ -615,12 +615,12 @@ function spawnSomka(){
   lastHit:0,aggro:null,aggroUntil:0,windup:0,walk:0};
  showFeed('Somka pojawił się w dżungli!',0);
  showNotice('SOMKA — BOSS W DŻUNGLI',2.6);
- ring(x,y,145,'#ff9fe7',1.35);burst(x,y,'#ff9be5',32,135);
+ ring(x,y,145,'#c8ff92',1.35);burst(x,y,'#d7a5f2',32,135);
 }
 function defeatSomka(boss,killer){
  const team=killer&&[0,1].includes(killer.team)?killer.team:null;
  somka=null;somkaNextSpawn=clock+SOMKA_RESPAWN;
- burst(boss.x,boss.y,'#ff9be5',70,220);ring(boss.x,boss.y,160,'#ffd0f7',1.4);
+ burst(boss.x,boss.y,'#d89df1',70,220);ring(boss.x,boss.y,160,'#dbffc3',1.4);
  if(team===null){showFeed('Somka został pokonany!',0);return}
  somkaBuffUntil[team]=clock+SOMKA_BUFF_DURATION;
  for(const h of heroes){if(h.team!==team)continue;addGold(h,125);grantXP(h,90)}
@@ -873,8 +873,8 @@ function updatePlayer(h,dt){let x=(keys.KeyD?1:0)-(keys.KeyA?1:0),y=(keys.KeyS?1
 function updateHeroes(dt){for(const h of heroes){h.goldTick+=dt;if(h.goldTick>=1){const ticks=Math.floor(h.goldTick);h.goldTick-=ticks;addGold(h,ticks*3)}if(h.ai&&shopAllowed(h)&&h.items.length<4&&Math.floor(clock*2)%2===0)botShop(h);h.attackCd-=dt;h.attackFlash=Math.max(0,h.attackFlash-dt);h.castAnim=Math.max(0,h.castAnim-dt);h.cool=h.cool.map(v=>Math.max(0,v-dt));if(h.dead){if(clock>=h.respawn){h.dead=false;h.hp=h.maxhp;h.shield=0;const b=spawnPoint(h.team);h.x=b.x+rand(-20,20);h.y=b.y+rand(-20,20);h.focus=null;h.lastEnemySeen=null;h.retreating=false;h.retreatUntil=0;h.retreatCooldown=0;h.targetLock=null;h.targetLockUntil=0;h.chaseUntil=0;h.spaceUntil=0;h.walkDX=undefined;h.walkDY=undefined;h.speedBuff=clock+3.2;h.cool=h.cool.map(v=>Math.min(v,3));ring(h.x,h.y,80,TEAMS[h.team]);if(h===player)showNotice('WRACASZ DO GRY!',1.2)}continue}if(h.shield&&clock>h.shieldEnd)h.shield=0;if(h.type==='hero'&&h.hp<h.maxhp){
  const base=basePoint(h.team),nearBase=distXY(h.x,h.y,base.x,base.y)<285;
  if(nearBase){
-  // Stacja regeneracji przy rdzeniu: pełne leczenie w kilka sekund, również dla AI.
-  h.hp=Math.min(h.maxhp,h.hp+dt*(h.maxhp*.23+12+(h.extraRegen||0)*1.5));h.regen=0;
+  // Regeneracja przy własnym rdzeniu: szybsza niż dawniej, ale nie natychmiastowa (zwykle ~7 s od zera).
+  h.hp=Math.min(h.maxhp,h.hp+dt*(h.maxhp*.12+8+(h.extraRegen||0)*1.5));h.regen=0;
  }else{
   h.regen+=dt;
   if(h.regen>=.85){h.hp=Math.min(h.maxhp,h.hp+2.6+(h.extraRegen||0));h.regen-=.85}
@@ -941,48 +941,56 @@ function ground(){if(!terrainCanvas)prepareGround();ctx.drawImage(terrainCanvas,
 function drawSomka(b){
  const c=ctx,x=b.x,y=b.y,t=clock;
  c.save();c.translate(x,y);
- c.fillStyle='#2a12338f';c.beginPath();c.ellipse(12,18,90,34,0,0,TAU);c.fill();
- c.translate(0,Math.sin(t*2.15)*2.6);
- // Różowo-fioletowy slime: galaretowata masa z oczami i płynnymi wypustkami.
- const wob1=Math.sin(t*2.4)*2.2,wob2=Math.cos(t*2.1)*1.8;
+ c.fillStyle='#18281b88';c.beginPath();c.ellipse(12,18,92,35,0,0,TAU);c.fill();
+ c.translate(0,Math.sin(t*2.05)*2.7);
+ // Troll-slime: zielonkawa, rozlewająca się sylwetka trolla z galaretowatą masą.
+ const wob1=Math.sin(t*2.35)*2.2,wob2=Math.cos(t*2.1)*1.8;
  c.beginPath();
- c.moveTo(-62,-22);
- c.quadraticCurveTo(-76,-76,-38,-102+wob1);
- c.quadraticCurveTo(-18,-121,3,-106+wob2);
- c.quadraticCurveTo(24,-123,44,-97+wob1);
- c.quadraticCurveTo(79,-70,68,-20);
- c.quadraticCurveTo(77,11,49,27);
- c.quadraticCurveTo(32,37,20,48);
- c.quadraticCurveTo(8,60,-3,48);
- c.quadraticCurveTo(-18,63,-31,47);
- c.quadraticCurveTo(-43,33,-55,24);
- c.quadraticCurveTo(-76,7,-62,-22);
+ c.moveTo(-60,-18);
+ c.quadraticCurveTo(-76,-74,-43,-100+wob1);
+ c.quadraticCurveTo(-30,-113,-16,-118+wob2*.25);
+ c.quadraticCurveTo(-10,-130,0,-127);
+ c.quadraticCurveTo(8,-133,18,-121+wob2*.3);
+ c.quadraticCurveTo(34,-116,46,-98+wob1);
+ c.quadraticCurveTo(76,-70,68,-18);
+ c.quadraticCurveTo(76,12,51,28);
+ c.quadraticCurveTo(37,38,25,52);
+ c.quadraticCurveTo(10,60,-2,47);
+ c.quadraticCurveTo(-14,61,-29,49);
+ c.quadraticCurveTo(-44,36,-55,24);
+ c.quadraticCurveTo(-75,7,-60,-18);
  c.closePath();
- const body=c.createRadialGradient(-16,-72,8,2,-28,108);
- body.addColorStop(0,'#ffb9f2');body.addColorStop(.45,'#ee79d6');body.addColorStop(.8,'#b24dd1');body.addColorStop(1,'#6b2e9f');
+ const body=c.createRadialGradient(-18,-80,8,3,-20,118);
+ body.addColorStop(0,'#e8ffbb');body.addColorStop(.32,'#98de7a');body.addColorStop(.60,'#63b86f');body.addColorStop(.83,'#b254c9');body.addColorStop(1,'#6c2f95');
  c.fillStyle=body;c.fill();
- c.strokeStyle='#6a2d91';c.lineWidth=7;c.stroke();
- // Wewnętrzna galaretka / połysk
- c.globalAlpha=.52;
- c.beginPath();c.ellipse(-10,-66,42,28,-.2,0,TAU);c.fillStyle='#ffd8fb';c.fill();
- c.globalAlpha=.28;
- c.beginPath();c.ellipse(18,-28,36,20,.15,0,TAU);c.fillStyle='#ffb6f1';c.fill();
+ c.strokeStyle='#355f3c';c.lineWidth=6.2;c.stroke();
+ // Wewnętrzna galaretowata masa
+ c.globalAlpha=.46;
+ c.beginPath();c.ellipse(-14,-66,39,26,-.18,0,TAU);c.fillStyle='#e8ffc8';c.fill();
+ c.globalAlpha=.24;
+ c.beginPath();c.ellipse(20,-24,34,19,.18,0,TAU);c.fillStyle='#f4b0ea';c.fill();
  c.globalAlpha=1;
- // Małe bąbelki slime'a
- for(const s of [[-48,-6,9],[-26,24,7],[40,8,8],[54,-24,6]]){disk(c,s[0],s[1],s[2],s[0]>0?'#d96fea':'#c85be4')}
+ // Trollowa brew / czoło i nos, ale miękko rozlane
+ c.strokeStyle='#4a743f';c.lineWidth=9;c.lineCap='round';c.beginPath();c.moveTo(-39,-93);c.lineTo(-8,-89);c.moveTo(9,-89);c.lineTo(38,-93);c.stroke();c.lineCap='butt';
+ c.fillStyle='#6eb774';c.beginPath();c.ellipse(0,-63,20,11,0,0,TAU);c.fill();
  // Oczy
- disk(c,-22,-60,15,'#fff6fd');disk(c,22,-60,15,'#fff6fd');disk(c,-19,-58,5.6,'#2b1536');disk(c,24,-58,5.6,'#2b1536');
- disk(c,-24,-63,2.1,'#ffffff');disk(c,20,-63,2.1,'#ffffff');
- // Usta i lekki śluzowy pyszczek
- c.fillStyle='#8a2d82';c.beginPath();c.ellipse(1,-31,24,13,0,0,TAU);c.fill();
- c.fillStyle='#ff96c9';c.beginPath();c.ellipse(1,-27,16,8,0,0,TAU);c.fill();
- c.strokeStyle='#ffdbfb88';c.lineWidth=3;c.beginPath();c.moveTo(-14,-86);c.quadraticCurveTo(-8,-97,-2,-92);c.moveTo(10,-96);c.quadraticCurveTo(18,-108,25,-95);c.stroke();
+ disk(c,-21,-82,13.5,'#fffdf6');disk(c,21,-82,13.5,'#fffdf6');disk(c,-18,-80,5.3,'#1e1f1d');disk(c,23,-80,5.3,'#1e1f1d');
+ disk(c,-23,-85,1.9,'#ffffff');disk(c,19,-85,1.9,'#ffffff');
+ // Pysk / usta
+ c.fillStyle='#5c3048';c.beginPath();c.ellipse(1,-39,25,13,0,0,TAU);c.fill();
+ c.fillStyle='#ff9fd4';c.beginPath();c.ellipse(1,-35,15,7.5,0,0,TAU);c.fill();
+ // Małe kły trolla
+ poly(c,[[-17,-43],[-12,-28],[-7,-42]],'#f3efcf','#7f7a60',1.5);
+ poly(c,[[17,-43],[12,-28],[7,-42]],'#f3efcf','#7f7a60',1.5);
+ // Slime bubbles and drips
+ for(const s of [[-48,-4,8],[-28,22,6],[39,7,7],[52,-19,5]]){disk(c,s[0],s[1],s[2],s[0]>0?'#bb63d8':'#79cc72')}
+ c.strokeStyle='#d7ffc17a';c.lineWidth=3;c.beginPath();c.moveTo(-12,-108);c.quadraticCurveTo(-8,-118,-2,-112);c.moveTo(11,-110);c.quadraticCurveTo(17,-120,24,-109);c.stroke();
  c.restore();
  const width=176,ratio=Math.max(0,b.hp/b.maxhp);
- c.fillStyle='#1c1022f2';c.fillRect(x-width/2-4,y-164,width+8,14);
- c.fillStyle='#5b2b67';c.fillRect(x-width/2,y-160,width,6);
- c.fillStyle='#ffa4eb';c.fillRect(x-width/2,y-160,width*ratio,6);
- c.fillStyle='#ffe9fb';c.font='bold 17px Cactu,Arial';c.textAlign='center';c.fillText('SOMKA',x,y-174);
+ c.fillStyle='#182017f2';c.fillRect(x-width/2-4,y-164,width+8,14);
+ c.fillStyle='#4d5a36';c.fillRect(x-width/2,y-160,width,6);
+ c.fillStyle='#d28ce8';c.fillRect(x-width/2,y-160,width*ratio,6);
+ c.fillStyle='#f3ffe9';c.font='bold 17px Cactu,Arial';c.textAlign='center';c.fillText('SOMKA',x,y-174);
 }
 function drawObjective(s){const c=ctx,team=TEAMS[s.team];if(s.dead){if(s.kind==='inhib'){c.save();c.translate(s.x,s.y);c.globalAlpha=.22;disk(c,0,0,53,team);hex(c,0,0,37,'#1d2934',team,clock*.3);c.restore()}else{disk(c,s.x,s.y,35,'#26333c');hex(c,s.x,s.y,28,'#17212b','#576674',PI/6)}return}
  c.save();c.translate(s.x,s.y);let t=clock; // Fake extrusion and cast shadow
