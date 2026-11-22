@@ -138,6 +138,7 @@ dialog{color:var(--white);background:#191d2b;border:1px solid #ac997d;border-top
 .delay-control label{font-size:14px;font-weight:750}.delay-entry{display:flex;align-items:center;gap:5px;padding:4px 8px;background:#101720;border:1px solid #788e89;border-radius:5px;color:#9ec7b8;font:700 12px var(--mono)}
 .delay-entry:focus-within{outline:2px solid var(--cream);outline-offset:2px}.delay-entry input{width:6ch;min-width:64px;background:transparent;border:0;color:#fff2d3;outline:0;padding:4px 0;text-align:right;font:700 16px var(--mono)}
 .delay-control input[type=range]{grid-column:1/-1;width:100%;margin:2px 0;accent-color:#9ae2c1}.delay-control small{grid-column:1/-1;color:#b9c6c3}.delay-control:has([aria-invalid="true"]) small{color:#ffac9e}
+.tune .tuneNotice{padding:10px 13px;border-left:4px solid #ffdc88;border-radius:4px;background:#383024;color:#fff3d2;font-size:14px;line-height:1.45;text-align:left}.tuneNotice strong{color:#ffdc88}
 </style>
 </head>
 <body>
@@ -216,6 +217,7 @@ dialog{color:var(--white);background:#191d2b;border:1px solid #ac997d;border-top
   <div class="dialogtop"><h2 id="tuneTitle">Dostrojenie rytmu</h2></div>
   <div class="tune">
     <p id="tuneGuide">Słuchaj: tik, tik, BUM. Stukaj tylko razem z BUM — raz na frazę. Użyj ↑, W, spacji lub przycisku poniżej.</p>
+    <p class="tuneNotice" role="note">Uwaga - warto powtórzyć próbę <strong>kilkukrotnie</strong>, żeby dobrze wyczuć rytm, szczególnie kiedy system wykrywa nadmiernie duże opóźnienie (większe niż 200ms). Zaleca się również pozostawienie zaznaczonej opcji <strong>Automatycznie dostrajaj podczas gry</strong>, aby gra mogła dostosować po każdym levelu opóźnienie do sposobu gry użytkownika.</p>
     <button class="tunePad" id="calTap" type="button" disabled><b id="calPulse" aria-hidden="true">♪</b><span>STUKNIJ</span></button>
     <div class="tuneProgress" id="tuneProgress" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <p id="calStatus" role="status">Złap rytm. Do pomiaru potrzeba sześciu równych stuknięć.</p>
